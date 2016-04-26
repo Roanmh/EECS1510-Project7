@@ -28,7 +28,7 @@ public class InventoryManagement {
         for (int i = 0; i < MAX_ENTRIES; ++i) {
             try {
                 String nextLine = fileInput.nextLine();
-                entryList[i] = new Entry(nextLine);
+                entryList[i] = new Entry();
             } catch (Exception e) {
                 entryList[i] = new Entry();
             }
@@ -64,7 +64,7 @@ public class InventoryManagement {
         System.out.println("Enter the code that you are looking for: ");
         String n = input.next();
         for (int i = 0; i < MAX_ENTRIES; ++i) {
-            if (entryList[i].name().toLowerCase().contains(n.toLowerCase())) {
+            if (entryList[i].getName().toLowerCase().contains(n.toLowerCase())) {
                 found = true;
                 System.out.println(entryList[i]);
             }
@@ -88,9 +88,9 @@ public class InventoryManagement {
         try (PrintStream P = new PrintStream(INV_LOCATION)) {
             for (int i=0; i < MAX_ENTRIES; i++) {
                 if (entryList[i].exists()) {
-                    P.println(entryList[i].name() + "\t" +
-                            entryList[i].number() + "\t" +
-                            entryList[i].notes());
+                    P.println(entryList[i].getName() + "\t" +
+                            entryList[i].getNumber() + "\t" +
+                            entryList[i].getNotes());
                 }
             }
             P.close();

@@ -17,16 +17,16 @@ import javafx.application.Application;
 import javafx.collections.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 
 public class InventoryManagementGUI extends Application {
-    TableColumn nameCol = new TableColumn("Name");
+    private TableView<Entry> table = new TableView<Entry>();
+    private ObservableList<Entry> entryList = FXCollections.observableArrayList(
+    new Entry("Test", "12", "Note Test"));
     
     @Override
     public void start(Stage primaryStage) {
@@ -34,11 +34,14 @@ public class InventoryManagementGUI extends Application {
         Menu menuFile = new Menu("File");
         menuBar.getMenus().addAll(menuFile);
         
-        TableView table = new TableView();
         TableColumn nameCol = new TableColumn("Name");
         nameCol.setCellValueFactory(new PropertyValueFactory<Entry, String>("name"));
         TableColumn<Entry, String> numberCol = new TableColumn("Number");
+        numberCol.setCellValueFactory(new PropertyValueFactory<Entry, String>("number"));
         TableColumn notesCol = new TableColumn("Notes");
+        notesCol.setCellValueFactory(new PropertyValueFactory<Entry, String>("notes"));
+        
+        table.setItems(entryList);
         table.getColumns().addAll(nameCol, numberCol, notesCol);
         
         VBox leftBox = new VBox();
@@ -56,7 +59,6 @@ public class InventoryManagementGUI extends Application {
         root.setLeft(leftBox);
         root.setRight(rightBox);
         root.setBottom(bottomBox);
-        
         
         Scene scene = new Scene(root, 800, 400);
         
