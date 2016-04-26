@@ -14,37 +14,56 @@
 package project7;
 
 import javafx.application.Application;
+import javafx.collections.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXML;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.*;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 public class InventoryManagementGUI extends Application {
+    TableColumn nameCol = new TableColumn("Name");
     
     @Override
     public void start(Stage primaryStage) {
-        Button btn = new Button();
-        btn.setText("Say 'Hello World'");
-        btn.setOnAction(new EventHandler<ActionEvent>() {
-            
-            @Override
-            public void handle(ActionEvent event) {
-                System.out.println("Hello World!");
-            }
-        });
+        MenuBar menuBar = new MenuBar();
+        Menu menuFile = new Menu("File");
+        menuBar.getMenus().addAll(menuFile);
         
-        StackPane root = new StackPane();
-        root.getChildren().add(btn);
+        TableView table = new TableView();
+        TableColumn nameCol = new TableColumn("Name");
+        nameCol.setCellValueFactory(new PropertyValueFactory<Entry, String>("name"));
+        TableColumn<Entry, String> numberCol = new TableColumn("Number");
+        TableColumn notesCol = new TableColumn("Notes");
+        table.getColumns().addAll(nameCol, numberCol, notesCol);
         
-        Scene scene = new Scene(root, 300, 250);
+        VBox leftBox = new VBox();
+        leftBox.getChildren().addAll(new Button("Hello!"), new Button("Greetings!"), new Button("Welcome to Earth!"));
+        
+        HBox bottomBox = new HBox();
+        bottomBox.getChildren().addAll(new Button("Hello!"), new Button("Greetings!"), new Button("Welcome to Earth!"));
+        
+        VBox rightBox = new VBox();
+        rightBox.getChildren().addAll(new Button("Hello!"), new Button("Greetings!"), new Button("Welcome to Earth!"));
+        
+        BorderPane root = new BorderPane();
+        root.setTop(menuBar);
+        root.setCenter(table);
+        root.setLeft(leftBox);
+        root.setRight(rightBox);
+        root.setBottom(bottomBox);
+        
+        
+        Scene scene = new Scene(root, 800, 400);
         
         primaryStage.setTitle("Hello World!");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
-
     public static void main(String[] args) {
         launch(args);
     }
