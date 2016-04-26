@@ -1,7 +1,7 @@
 /*
 *
-* Project 6: Inventory Management
-* Caleb Davenport
+* Project 7: Inventory Management
+* Caleb Davenport & Roan Martin-Hayden
 * EECS 1510-091: Dr. Ledgard
 *
 * Description:
@@ -11,7 +11,7 @@
 *
 */
 
-package inventorymanagement;
+package project7;
 
 public class Entry {
     private String name, number, notes;

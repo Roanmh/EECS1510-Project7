@@ -1,3 +1,16 @@
+/*
+*
+* Project 7: Inventory Management
+* Caleb Davenport & Roan Martin-Hayden
+* EECS 1510-091: Dr. Ledgard
+*
+* Description:
+* Entry class handles parsing data that's input
+* via individual parameters or parsing the individual lines
+* The data is then exported via public functions.
+*
+*/
+
 package project7;
 
 import javafx.application.Application;
@@ -8,7 +21,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-public class Project7 extends Application {
+public class InventoryManagementGUI extends Application {
     
     @Override
     public void start(Stage primaryStage) {
