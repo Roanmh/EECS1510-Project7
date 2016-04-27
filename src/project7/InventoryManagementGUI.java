@@ -13,6 +13,7 @@
 
 package project7;
 
+import java.io.File;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -26,14 +27,15 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class InventoryManagementGUI extends Application {
-    private final static TableView<Entry> TABLE = new TableView<>();
-    private final static MenuBar MENU_BAR = new MenuBar();
-    private final static HBox BOTTOM_BOX = new HBox();
-    private final static VBox RIGHT_BOX = new VBox();
-    private final static BorderPane ROOT = new BorderPane();
+    private static final TableView<Entry> TABLE = new TableView<>();
+    private static final MenuBar MENU_BAR = new MenuBar();
+    private static final HBox BOTTOM_BOX = new HBox();
+    private static final VBox RIGHT_BOX = new VBox();
+    private static final BorderPane ROOT = new BorderPane();
     private static String filterText = "";
     
     @Override
@@ -202,6 +204,17 @@ public class InventoryManagementGUI extends Application {
     }
     private void openListHandler() {
         System.out.println("openList");
+        Stage stage = new Stage();
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open a new inventory list");
+        fileChooser.setInitialDirectory(new File(".\\"));
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("*.inv", "*.inv"),
+                new FileChooser.ExtensionFilter("All Files", "*.*")
+        );
+        File file = fileChooser.showOpenDialog(stage);
+        if (file == null) return;
+        InventoryManagement.loadInventory(file.getPath());
     }
     private void saveListHandler() {
         System.out.println("saveList");
