@@ -12,13 +12,17 @@
 
 package project7;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.*;
 
 public class InventoryManagement {
     public static final String INV_LOCATION = "Inventory\\Inventory.txt";
-    public final static ObservableList<Entry> entryList
-            = FXCollections.observableArrayList();
+    public final static ArrayList<Entry> entryList = new ArrayList<>();
     //static ArrayList<Entry> entryList = new ArrayList<>();
     
     /**
@@ -117,6 +121,51 @@ public class InventoryManagement {
     }
     
     /**
+     * 
+     * @param pathStr
+     * @return 
+     */
+    public static String loadInventory(String pathStr) {
+        String errMessage;
+        File file;
+        Scanner invIn;
+        String[] entryVals;
+        
+        errMessage = "";
+        file = new File(pathStr);
+        try {
+            invIn = new Scanner(file);
+            while (invIn.hasNextLine()) {
+                entryVals = invIn.nextLine().split("\t");
+                addEntry(entryVals[0], entryVals[1], entryVals[2]);
+            }
+        } catch (FileNotFoundException ex) {
+            errMessage = "File not found.";
+        }
+        
+        return errMessage;
+    }
+    
+    public static String saveInventory(String pathStr) {
+        String errMessage;
+        PrintStream invOut;
+        
+        errMessage = "";
+        try {
+            invOut = new PrintStream(INV_LOCATION);
+            for (Entry entryOut : entryList) {
+                System.out.printf("%s\t%s\t%s", entryOut.getName(),
+                                  entryOut.getNumber(), entryOut.getNotes());
+            }
+            invOut.close();
+        } catch (FileNotFoundException ex) {
+            errMessage = "File not found.";
+        }
+        
+        return errMessage;
+    }
+    
+    /**
      * Checks that a name is formatted correctly
      * 
      * @param name Name to be tested
@@ -195,7 +244,7 @@ public class InventoryManagement {
      * @param filtStr String to filter the text by
      * @return ObserableList with only the elements to display
      */
-    public static ObservableList<Entry> filterEntries(String filtStr) {
+    public static ObservableList<Entry> filteredEntries(String filtStr) {
         ObservableList<Entry> filtList;
         
         filtList = FXCollections.observableArrayList();
