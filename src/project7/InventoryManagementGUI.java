@@ -14,6 +14,8 @@
 package project7;
 
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -63,15 +65,27 @@ public class InventoryManagementGUI extends Application {
         {
             MenuItem newList = new MenuItem("New List");
             newList.setAccelerator(KeyCombination.keyCombination("Ctrl+N"));
+            newList.setOnAction((ActionEvent e) -> {
+                newListHandler();
+            });
 
             MenuItem openList = new MenuItem("Open List");
             openList.setAccelerator(KeyCombination.keyCombination("Ctrl+O"));
+            openList.setOnAction((ActionEvent e) -> {
+                openListHandler();
+            });
 
             MenuItem saveList = new MenuItem("Save List");
             saveList.setAccelerator(KeyCombination.keyCombination("Ctrl+S"));
+            saveList.setOnAction((ActionEvent e) -> {
+                saveListHandler();
+            });
 
             MenuItem exit = new MenuItem("Exit");
             exit.setAccelerator(KeyCombination.keyCombination("Ctrl+Q"));
+            exit.setOnAction((ActionEvent e) -> {
+                System.exit(0);
+            });
 
             menuFile.getItems().addAll(newList, openList, saveList, new SeparatorMenuItem(), exit);
         }
@@ -79,10 +93,19 @@ public class InventoryManagementGUI extends Application {
         Menu menuEdit = new Menu("Edit");
         {
             MenuItem addEntry = new MenuItem("Add Entry");
+            addEntry.setOnAction((ActionEvent e) -> {
+                addEntryHandler();
+            });
 
             MenuItem editEntry = new MenuItem("Edit Entry");
+            editEntry.setOnAction((ActionEvent e) -> {
+                editEntryHandler();
+            });
 
             MenuItem deleteEntry = new MenuItem("Delete Entry");
+            deleteEntry.setOnAction((ActionEvent e) -> {
+                deleteEntryHandler();
+            });
 
             menuEdit.getItems().addAll(addEntry, editEntry, deleteEntry);
         }
@@ -90,6 +113,9 @@ public class InventoryManagementGUI extends Application {
         Menu menuHelp = new Menu("Help");
         {
             MenuItem about = new MenuItem("About");
+            about.setOnAction((ActionEvent e) -> {
+                aboutHandler();
+            });
 
             menuHelp.getItems().addAll(about);
         }
@@ -108,18 +134,41 @@ public class InventoryManagementGUI extends Application {
         TABLE.getColumns().addAll(nameCol, numberCol, notesCol);
     }
     private void setupSidePanel() {
-        RIGHT_BOX.getChildren().addAll(new Button("Add Entry"), new Button("Edit Entry"), new Button("Delete Entry"));
+        Button addEntry = new Button("Add Entry");
+        addEntry.setOnAction((ActionEvent e) -> {
+            addEntryHandler();
+        });
+
+        Button editEntry = new Button("Edit Entry");
+        editEntry.setOnAction((ActionEvent e) -> {
+            editEntryHandler();
+        });
+
+        Button deleteEntry = new Button("Delete Entry");
+        deleteEntry.setOnAction((ActionEvent e) -> {
+            deleteEntryHandler();
+        });
+        RIGHT_BOX.getChildren().addAll(addEntry, editEntry, deleteEntry);
     }
     private void setupBottomFilter() {
         TextField t = new TextField();
         t.setPromptText("Filter");
         t.setPrefWidth(500); //TODO: CHANGE TO WIDTH OF TABLE
+        t.setOnKeyReleased((KeyEvent e) -> {
+            filterHandler();
+        });
         ComboBox c = new ComboBox();
         c.getItems().addAll(
                 "Name",
                 "Notes"
         );
         c.setValue("Name");
+        c.valueProperty().addListener(new ChangeListener<String>() {
+            @Override 
+            public void changed(ObservableValue ov, String t, String t1) {                
+                filterChoiceHandler();
+            }
+        });
         BOTTOM_BOX.getChildren().addAll(t, c);
     }
     private void setupMargins() {
@@ -130,25 +179,31 @@ public class InventoryManagementGUI extends Application {
     }
     
     private void addEntryHandler() {
-        
+        System.out.println("addEntry");
     }
     private void editEntryHandler() {
-        
+        System.out.println("editEntry");
     }
     private void deleteEntryHandler() {
-        
+        System.out.println("deleteEntry");
     }
     private void filterHandler() {
-        
+        System.out.println("FILTER!");
+    }
+    private void filterChoiceHandler() {
+        System.out.println("CHANGED");
     }
     private void newListHandler() {
-        
+        System.out.println("newList");
     }
     private void openListHandler() {
-        
+        System.out.println("openList");
     }
     private void saveListHandler() {
-        
+        System.out.println("saveList");
+    }
+    private void aboutHandler() {
+        System.out.println("About");
     }
     public static void main(String[] args) {
         launch(args);
