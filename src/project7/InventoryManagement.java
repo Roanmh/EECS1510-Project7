@@ -14,7 +14,10 @@ package project7;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.*;
 
 public class InventoryManagement {
@@ -117,6 +120,11 @@ public class InventoryManagement {
         }
     }
     
+    /**
+     * 
+     * @param pathStr
+     * @return 
+     */
     public static String loadInventory(String pathStr) {
         String errMessage;
         File file;
@@ -133,7 +141,25 @@ public class InventoryManagement {
             }
         } catch (FileNotFoundException ex) {
             errMessage = "File not found.";
-            return errMessage;
+        }
+        
+        return errMessage;
+    }
+    
+    public static String saveInventory(String pathStr) {
+        String errMessage;
+        PrintStream invOut;
+        
+        errMessage = "";
+        try {
+            invOut = new PrintStream(INV_LOCATION);
+            for (Entry entryOut : entryList) {
+                System.out.printf("%s\t%s\t%s", entryOut.getName(),
+                                  entryOut.getNumber(), entryOut.getNotes());
+            }
+            invOut.close();
+        } catch (FileNotFoundException ex) {
+            errMessage = "File not found.";
         }
         
         return errMessage;
