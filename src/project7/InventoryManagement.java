@@ -54,32 +54,33 @@ public class InventoryManagement {
      * 
      * @return Highest priority error if encountered, empty if success
      * 
-     * TODO: Multiple Error Handling
+     * TODO: Force add/Overwrite entry mechanic
      * TODO: Better Entry Overwrite
      */
-    public static String addEntry(String name, String number, String notes) {
+    public static EntryReport addEntry(String name, String number, String notes) {
         String errMessage;
-        int insertLoc;
+        int foundIndex;
+        Entry attemptedEntry;
+        Entry foundEntry;
     
         // Check for existing Entry
-        // TODO: Update to handle errors better
-//        int existingLoc = -1;
-//        existingLoc = findEntry(name);
-//        if (existingLoc != -1) {
-//            // Error Handling code here
-//        }
+        foundIndex = findEntry(name);
+        foundEntry = entryList.get(foundIndex);
 
+        // Name based Error Message creation
         errMessage = checkNameValidity(name);
         if (!"".equals(errMessage)) {
             errMessage = checkNumberValidty(number);
         }
 
-        if ("".equals(errMessage)) {
+        // If no errors of conflicting entry, make enty and sort
+        if ("".equals(errMessage) || foundEntry.exists()) {
             entryList.add(new Entry(name, number, notes));
             customSort(entryList);
         }
         
-        return errMessage;
+        attemptedEntry = new Entry(name, number, notes);
+        return new EntryReport(attemptedEntry, foundEntry, foundIndex, errMessage);
     }
     
     /**
