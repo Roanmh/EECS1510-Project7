@@ -13,48 +13,32 @@
 
 package project7;
 
+import javafx.beans.property.*;
+
 public class Entry {
-    private String name, number, notes;
+    private SimpleStringProperty name, number, notes;
     private boolean exists;
     Entry() {
         clear();
     }
-    Entry(String rawLine) throws Exception {
-        clear();
-        getDataFromLine(rawLine);
-    }
     Entry(String name, String number, String notes) {
-        this.name = parseName(name);
-        this.number = number;
-        this.notes = notes;
+        this.name = new SimpleStringProperty(name);
+        this.number = new SimpleStringProperty(number);
+        this.notes = new SimpleStringProperty(notes);
         exists = true;
-    }
-    private void getDataFromLine(String rawLine) {
-        name = rawLine.substring(0, rawLine.indexOf("\t"));
-        rawLine = removePreviousToken(rawLine);
-        number = rawLine.substring(0, rawLine.indexOf("\t"));
-        rawLine = removePreviousToken(rawLine);
-        notes = rawLine;
-        exists = true;
-    }
-    private String removePreviousToken(String n) {
-        n = n.substring(n.indexOf("\t"));
-        n = n.trim();
-        return n;
-    }
-    private String parseName(String s) {
-        if (s.length() > 8) s = s.substring(0, 8);
-        return s;
     }
     private void clear() {
-        name = "";
-        number = "";
-        notes = "";
+        this.name = new SimpleStringProperty("");
+        this.number = new SimpleStringProperty("");
+        this.notes = new SimpleStringProperty("");
         exists = false;
     }
-    public String name() { return name; }
-    public String number() { return number; }
-    public String notes() { return notes; }
+    public String getName() { return name.get(); }
+    public void setName(String n) { name.set(n); }
+    public String getNumber() { return number.get(); }
+    public void setNumber(String n) { number.set(n); }
+    public String getNotes() { return notes.get(); }
+    public void setNotes(String n) { notes.set(n); }
     public boolean exists() { return exists; }
     @Override
     public String toString() {

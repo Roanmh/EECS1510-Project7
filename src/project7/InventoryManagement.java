@@ -35,7 +35,7 @@ public class InventoryManagement {
         
         // Search Algorithm
         for (int i = 0; i < entryList.size(); ++i) {
-            if (customEquals(name, entryList.get(i).name())) {
+            if (customEquals(name, entryList.get(i).getName())) {
                 location = i;
             }
         }
@@ -75,7 +75,7 @@ public class InventoryManagement {
         if ("".equals(errMessage)) {
             entryList.add(new Entry(name, number, notes));
             Collections.sort(entryList,
-                            (Entry e1, Entry e2) -> e1.name().compareTo(e2.name()));
+                            (Entry e1, Entry e2) -> e1.getName().compareTo(e2.getName()));
         }
         
         return errMessage;
