@@ -13,12 +13,13 @@
 package project7;
 
 import java.util.*;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.collections.*;
 
 public class InventoryManagement {
     public static final String INV_LOCATION = "Inventory\\Inventory.txt";
-    static ArrayList<Entry> entryList = new ArrayList<>();
+    public final static ObservableList<Entry> entryList
+            = FXCollections.observableArrayList();
+    //static ArrayList<Entry> entryList = new ArrayList<>();
     
     /**
      * Finds an entry and returns the location or -1 if not found
@@ -76,7 +77,7 @@ public class InventoryManagement {
         // If no errors of conflicting entry, make enty and sort
         if ("".equals(errMessage) || foundEntry.exists()) {
             entryList.add(new Entry(name, number, notes));
-            customSort(entryList);
+            //customSort(entryList);
         }
         
         attemptedEntry = new Entry(name, number, notes);
