@@ -27,11 +27,11 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 public class InventoryManagementGUI extends Application {
-    private final static TableView<Entry> table = new TableView<Entry>();
-    private final static MenuBar menuBar = new MenuBar();
-    private final static HBox bottomBox = new HBox();
-    private final static VBox rightBox = new VBox();
-    private final static BorderPane root = new BorderPane();
+    private final static TableView<Entry> TABLE = new TableView<>();
+    private final static MenuBar MENU_BAR = new MenuBar();
+    private final static HBox BOTTOM_BOX = new HBox();
+    private final static VBox RIGHT_BOX = new VBox();
+    private final static BorderPane ROOT = new BorderPane();
     
     @Override
     public void start(Stage primaryStage) {
@@ -45,14 +45,14 @@ public class InventoryManagementGUI extends Application {
         setupMargins();
         
         //table.setPadding(new Insets(10));
-        BorderPane.setMargin(table, new Insets(0, 10, 0, 10));
-        BorderPane.setMargin(menuBar, new Insets(0, 0, 10, 0));
-        root.setTop(menuBar);
-        root.setCenter(table);
-        root.setRight(rightBox);
-        root.setBottom(bottomBox);
+        BorderPane.setMargin(TABLE, new Insets(0, 10, 0, 10));
+        BorderPane.setMargin(MENU_BAR, new Insets(0, 0, 10, 0));
+        ROOT.setTop(MENU_BAR);
+        ROOT.setCenter(TABLE);
+        ROOT.setRight(RIGHT_BOX);
+        ROOT.setBottom(BOTTOM_BOX);
         
-        Scene scene = new Scene(root, 800, 400);
+        Scene scene = new Scene(ROOT, 800, 400);
         
         primaryStage.setTitle("Inventory Management");
         primaryStage.setScene(scene);
@@ -94,7 +94,7 @@ public class InventoryManagementGUI extends Application {
             menuHelp.getItems().addAll(about);
         }
         
-        menuBar.getMenus().addAll(menuFile, menuEdit, menuHelp);
+        MENU_BAR.getMenus().addAll(menuFile, menuEdit, menuHelp);
     }
     private void initializeTable() {
         TableColumn nameCol = new TableColumn("Name");
@@ -104,11 +104,11 @@ public class InventoryManagementGUI extends Application {
         TableColumn notesCol = new TableColumn("Notes");
         notesCol.setCellValueFactory(new PropertyValueFactory<>("notes"));
         
-        table.setItems(InventoryManagement.entryList);
-        table.getColumns().addAll(nameCol, numberCol, notesCol);
+        TABLE.setItems(InventoryManagement.entryList);
+        TABLE.getColumns().addAll(nameCol, numberCol, notesCol);
     }
     private void setupSidePanel() {
-        rightBox.getChildren().addAll(new Button("Add Entry"), new Button("Edit Entry"), new Button("Delete Entry"));
+        RIGHT_BOX.getChildren().addAll(new Button("Add Entry"), new Button("Edit Entry"), new Button("Delete Entry"));
     }
     private void setupBottomFilter() {
         TextField t = new TextField();
@@ -120,13 +120,13 @@ public class InventoryManagementGUI extends Application {
                 "Notes"
         );
         c.setValue("Name");
-        bottomBox.getChildren().addAll(t, c);
+        BOTTOM_BOX.getChildren().addAll(t, c);
     }
     private void setupMargins() {
-        BorderPane.setMargin(table, new Insets(0, 10, 10, 0));
-        BorderPane.setMargin(menuBar, new Insets(0, 0, 10, 0));
-        BorderPane.setMargin(rightBox, new Insets(0, 10, 0, 0));
-        BorderPane.setMargin(bottomBox, new Insets(5, 10, 5, 10));
+        BorderPane.setMargin(TABLE, new Insets(0, 10, 10, 0));
+        BorderPane.setMargin(MENU_BAR, new Insets(0, 0, 10, 0));
+        BorderPane.setMargin(RIGHT_BOX, new Insets(0, 10, 0, 0));
+        BorderPane.setMargin(BOTTOM_BOX, new Insets(5, 10, 5, 10));
     }
     
     private void addEntryHandler() {
@@ -139,6 +139,15 @@ public class InventoryManagementGUI extends Application {
         
     }
     private void filterHandler() {
+        
+    }
+    private void newListHandler() {
+        
+    }
+    private void openListHandler() {
+        
+    }
+    private void saveListHandler() {
         
     }
     public static void main(String[] args) {
