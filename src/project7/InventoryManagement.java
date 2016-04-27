@@ -12,13 +12,14 @@
 
 package project7;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.*;
 import javafx.collections.*;
 
 public class InventoryManagement {
     public static final String INV_LOCATION = "Inventory\\Inventory.txt";
-    public final static ObservableList<Entry> entryList
-            = FXCollections.observableArrayList();
+    public final static ArrayList<Entry> entryList = new ArrayList<>();
     //static ArrayList<Entry> entryList = new ArrayList<>();
     
     /**
@@ -116,6 +117,28 @@ public class InventoryManagement {
         }
     }
     
+    public static String loadInventory(String pathStr) {
+        String errMessage;
+        File file;
+        Scanner invIn;
+        String[] entryVals;
+        
+        errMessage = "";
+        file = new File(pathStr);
+        try {
+            invIn = new Scanner(file);
+            while (invIn.hasNextLine()) {
+                entryVals = invIn.nextLine().split("\t");
+                addEntry(entryVals[0], entryVals[1], entryVals[2]);
+            }
+        } catch (FileNotFoundException ex) {
+            errMessage = "File not found.";
+            return errMessage;
+        }
+        
+        return errMessage;
+    }
+    
     /**
      * Checks that a name is formatted correctly
      * 
@@ -195,7 +218,7 @@ public class InventoryManagement {
      * @param filtStr String to filter the text by
      * @return ObserableList with only the elements to display
      */
-    public static ObservableList<Entry> filterEntries(String filtStr) {
+    public static ObservableList<Entry> filteredEntries(String filtStr) {
         ObservableList<Entry> filtList;
         
         filtList = FXCollections.observableArrayList();
