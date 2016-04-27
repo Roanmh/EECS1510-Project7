@@ -13,6 +13,8 @@
 package project7;
 
 import java.util.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 public class InventoryManagement {
     public static final String INV_LOCATION = "Inventory\\Inventory.txt";
@@ -74,11 +76,42 @@ public class InventoryManagement {
 
         if ("".equals(errMessage)) {
             entryList.add(new Entry(name, number, notes));
-            Collections.sort(entryList,
-                            (Entry e1, Entry e2) -> e1.getName().compareTo(e2.getName()));
+            customSort(entryList);
         }
         
         return errMessage;
+    }
+    
+    /**
+     * Finds entry by name and deletes it.
+     * 
+     * @param name name of entry to delete
+     * @return Error message if occurred
+     */
+    public static String deleteEntry(String name) {
+        int index;
+        
+        index = findEntry(name);
+        if (index == -1) return "Entry not found.";
+        else return deleteEntry(index);
+        
+        // Could ha done this
+//        return (findEntry(name) == -1) ? "blargh" : deleteEntry(findEntry(name));
+    }
+
+    /**
+     * Deletes entry at the given index.
+     * 
+     * @param index location of entry to delete
+     * @return Error message if occurred
+     */
+    public static String deleteEntry(int index) {
+        if (index > 0 && index < entryList.size()) {
+            entryList.remove(index);
+            return "";
+        } else {
+            return "Index out of range.";
+        }
     }
     
     /**
@@ -148,4 +181,26 @@ public class InventoryManagement {
         return name1.equals(name2);
     }
     
+    private static void customSort(ArrayList<Entry> list) {
+        Collections.sort(list,
+                         (Entry e1, Entry e2) ->
+                                e1.getName().compareTo(e2.getName()));
+
+    }
+    
+    /**
+     * Returns a filtered version of list given the string
+     * @param filtStr String to filter the text by
+     * @return ObserableList with only the elements to display
+     */
+    public static ObservableList<Entry> filterEntries(String filtStr) {
+        ObservableList<Entry> filtList;
+        
+        filtList = FXCollections.observableArrayList();
+        for (Entry e : entryList) {
+            if (e.getName().contains(filtStr)) filtList.add(e);
+        }
+        
+        return filtList;
+    }
 }
