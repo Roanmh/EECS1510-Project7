@@ -34,6 +34,7 @@ public class InventoryManagementGUI extends Application {
     private final static HBox BOTTOM_BOX = new HBox();
     private final static VBox RIGHT_BOX = new VBox();
     private final static BorderPane ROOT = new BorderPane();
+    private static String filterText = "";
     
     @Override
     public void start(Stage primaryStage) {
@@ -41,7 +42,7 @@ public class InventoryManagementGUI extends Application {
         InventoryManagement.entryList.add(new Entry("ni", "6", "ksjhdkas"));
         
         addMenus();
-        initializeTable();
+        updateTable();
         setupSidePanel();
         setupBottomFilter();
         setupMargins();
@@ -122,7 +123,8 @@ public class InventoryManagementGUI extends Application {
         
         MENU_BAR.getMenus().addAll(menuFile, menuEdit, menuHelp);
     }
-    private void initializeTable() {
+    private void updateTable() {
+        TABLE.getColumns().clear();
         TableColumn nameCol = new TableColumn("Name");
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         TableColumn<Entry, String> numberCol = new TableColumn("Number");
@@ -130,7 +132,7 @@ public class InventoryManagementGUI extends Application {
         TableColumn notesCol = new TableColumn("Notes");
         notesCol.setCellValueFactory(new PropertyValueFactory<>("notes"));
         
-        TABLE.setItems(InventoryManagement.entryList);
+        TABLE.setItems(InventoryManagement.filteredEntries(filterText));
         TABLE.getColumns().addAll(nameCol, numberCol, notesCol);
     }
     private void setupSidePanel() {
@@ -155,7 +157,7 @@ public class InventoryManagementGUI extends Application {
         t.setPromptText("Filter");
         t.setPrefWidth(500); //TODO: CHANGE TO WIDTH OF TABLE
         t.setOnKeyReleased((KeyEvent e) -> {
-            filterHandler();
+            filterHandler(t.getText());
         });
         ComboBox c = new ComboBox();
         c.getItems().addAll(
@@ -187,8 +189,10 @@ public class InventoryManagementGUI extends Application {
     private void deleteEntryHandler() {
         System.out.println("deleteEntry");
     }
-    private void filterHandler() {
+    private void filterHandler(String s) {
         System.out.println("FILTER!");
+        filterText = s;
+        updateTable();
     }
     private void filterChoiceHandler() {
         System.out.println("CHANGED");
