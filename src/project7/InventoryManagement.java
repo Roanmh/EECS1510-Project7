@@ -12,89 +12,140 @@
 
 package project7;
 
-import java.io.*;
 import java.util.*;
 
 public class InventoryManagement {
-    public static final int MAX_ENTRIES = 200;
     public static final String INV_LOCATION = "Inventory\\Inventory.txt";
-    static Entry[] entryList = new Entry[MAX_ENTRIES];
-    static Scanner input = new Scanner(System.in);
+    static ArrayList<Entry> entryList = new ArrayList<>();
     
-    public static void main(String[] args) throws Exception {
-        File f = new File(INV_LOCATION);
-        Scanner fileInput = new Scanner(f);
-        System.out.println("Codes are entered as 1 to 8 characters.");
-        for (int i = 0; i < MAX_ENTRIES; ++i) {
-            try {
-                String nextLine = fileInput.nextLine();
-                entryList[i] = new Entry(nextLine);
-            } catch (Exception e) {
-                entryList[i] = new Entry();
+    /**
+     * Finds an entry and returns the location or -1 if not found
+     * 
+     * @param name Name to search for
+     * @return Index location of the entry or -1 if not found
+     */
+    public static int findEntry(String name) {
+        int location;
+        
+        //Normalize String
+        
+        
+        // Not fuund value
+        location = -1;
+        
+        // Search Algorithm
+        for (int i = 0; i < entryList.size(); ++i) {
+            if (customEquals(name, entryList.get(i).name())) {
+                location = i;
             }
         }
-        while (true) {
-            System.out.println("Use \"e\" for enter, \"f\" for find, "
-                    + "\"l\" for list, \"q\" for quit.");
-            System.out.print("Command: ");
-            switch (input.next()) {
-                case "e":
-                    enter();
-                    break;
-                case "f":
-                    find();
-                    break;
-                case "l":
-                    list();
-                    break;
-                case "q":
-                    System.exit(0);
-                default:
-                    break;
-            }
-        }
+        
+        return location;
     }
-    private static void list() {
-        for (int i = 0; i < MAX_ENTRIES; ++i) {
-            if (entryList[i].exists()) System.out.println(entryList[i]);
+    
+    /**
+     * Adds Entry to the inventory array
+     * 
+     * @param name Name of entry
+     * @param number Quantity of entry
+     * @param notes Quantity of entry
+     * 
+     * @return Highest priority error if encountered, empty if success
+     * 
+     * TODO: Multiple Error Handling
+     * TODO: Better Entry Overwrite
+     */
+    public static String addEntry(String name, String number, String notes) {
+        String errMessage;
+        int insertLoc;
+    
+        // Check for existing Entry
+        // TODO: Update to handle errors better
+//        int existingLoc = -1;
+//        existingLoc = findEntry(name);
+//        if (existingLoc != -1) {
+//            // Error Handling code here
+//        }
+
+        errMessage = checkNameValidity(name);
+        if (!"".equals(errMessage)) {
+            errMessage = checkNumberValidty(number);
         }
+
+        if ("".equals(errMessage)) {
+            entryList.add(new Entry(name, number, notes));
+            Collections.sort(entryList,
+                            (Entry e1, Entry e2) -> e1.name().compareTo(e2.name()));
+        }
+        
+        return errMessage;
     }
-    private static void find() {
-        boolean found = false;
-        System.out.println("Enter the code that you are looking for: ");
-        String n = input.next();
-        for (int i = 0; i < MAX_ENTRIES; ++i) {
-            if (entryList[i].name().toLowerCase().contains(n.toLowerCase())) {
-                found = true;
-                System.out.println(entryList[i]);
-            }
+    
+    /**
+     * Checks that a name is formatted correctly
+     * 
+     * @param name Name to be tested
+     * @return Highest priority error message, empty if OK
+     */
+    public static String checkNameValidity(String name) {
+        String errMessage;
+        
+        errMessage = "";
+        
+        /// Tests, ordered by priority
+        // Length Check
+        if (name.length() == 0) {
+            errMessage = "No name entered.";
+        } else if (name.length() > 8) {
+            errMessage = "Name is to long.";
         }
-        if (!found) System.out.println("No entry with code: " + n);
+        
+        return errMessage;
     }
-    public static void enter() throws Exception {
-        String name, number, notes;
-        System.out.print("Enter name: ");
-        name = input.next();
-        System.out.print("Enter quantity: ");
-        number = input.next();
-        System.out.print("Enter notes: ");
-        notes = input.next();
-        for (int i = 0; i < MAX_ENTRIES; ++i) {
-            if (!entryList[i].exists()){
-                entryList[i] = new Entry(name, number, notes);
-                break;
-            }
+    
+    /**
+     * Checks that a number is formatted correctly
+     * 
+     * @param number Number to be tested
+     * @return Highest priority error message, empty if OK
+     */
+    public static String checkNumberValidty(String number) {
+        String errMessage;
+        
+        errMessage = "";
+        
+        /// Tests, ordered by priority
+        // Numerals Check
+        if (!number.matches("[0-9]+\\.[0-9]*|[0-9]*\\.[0-9]+")) {
+            errMessage = "Not a number.";
         }
-        try (PrintStream P = new PrintStream(INV_LOCATION)) {
-            for (int i=0; i < MAX_ENTRIES; i++) {
-                if (entryList[i].exists()) {
-                    P.println(entryList[i].name() + "\t" +
-                            entryList[i].number() + "\t" +
-                            entryList[i].notes());
-                }
-            }
-            P.close();
-            System.out.println("Inventory stored.");
+        
+        // Negativity Check
+        if (number.matches("-")) {
+            errMessage = "Can't have negative inventory.";
         }
+        
+        return errMessage;
     }
+    
+    /**
+     * Returns whether strings are equal with custom qualifications
+     * 
+     * @param name1 First name to check
+     * @param name2 Second name to check
+     * @return They are equal
+     */
+    public static boolean customEquals(String name1, String name2) {
+        
+        // Ingore case
+        name1 = name1.toLowerCase();
+        name2 = name2.toLowerCase();
+        
+        // Ignore external whitespace
+        name1 = name1.trim();
+        name2 = name2.trim();
+        
+        return name1.equals(name2);
+    }
+    
 }
