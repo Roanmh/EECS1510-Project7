@@ -13,10 +13,13 @@
 package project7;
 
 import java.util.*;
+import javafx.collections.*;
 
 public class InventoryManagement {
     public static final String INV_LOCATION = "Inventory\\Inventory.txt";
-    static ArrayList<Entry> entryList = new ArrayList<>();
+    public final static ObservableList<Entry> entryList
+            = FXCollections.observableArrayList();
+    //static ArrayList<Entry> entryList = new ArrayList<>();
     
     /**
      * Finds an entry and returns the location or -1 if not found

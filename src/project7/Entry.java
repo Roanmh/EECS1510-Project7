@@ -35,10 +35,13 @@ public class Entry {
     }
     public String getName() { return name.get(); }
     public void setName(String n) { name.set(n); }
+    
     public String getNumber() { return number.get(); }
     public void setNumber(String n) { number.set(n); }
+    
     public String getNotes() { return notes.get(); }
     public void setNotes(String n) { notes.set(n); }
+    
     public boolean exists() { return exists; }
     @Override
     public String toString() {

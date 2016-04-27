@@ -17,6 +17,8 @@ import javafx.application.Application;
 import javafx.collections.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.*;
@@ -26,24 +28,25 @@ import javafx.stage.Stage;
 
 public class InventoryManagementGUI extends Application {
     private final static TableView<Entry> table = new TableView<Entry>();
-    private final static ObservableList<Entry> entryList
-            = FXCollections.observableArrayList(new Entry("Test", "12", "Note Test"));
     private final static MenuBar menuBar = new MenuBar();
+    private final static HBox bottomBox = new HBox();
+    private final static VBox rightBox = new VBox();
+    private final static BorderPane root = new BorderPane();
     
     @Override
     public void start(Stage primaryStage) {
-        entryList.add(new Entry());
+        InventoryManagement.entryList.add(new Entry());
+        InventoryManagement.entryList.add(new Entry("ni", "6", "ksjhdkas"));
         
         addMenus();
-        populateTable();
+        initializeTable();
+        setupSidePanel();
+        setupBottomFilter();
+        setupMargins();
         
-        VBox rightBox = new VBox();
-        rightBox.getChildren().addAll(new Button("Add Entry"), new Button("Edit Entry"), new Button("Delete Entry"));
-        
-        HBox bottomBox = new HBox();
-        bottomBox.getChildren().addAll(new Button("Filter"));
-        
-        BorderPane root = new BorderPane();
+        //table.setPadding(new Insets(10));
+        BorderPane.setMargin(table, new Insets(0, 10, 0, 10));
+        BorderPane.setMargin(menuBar, new Insets(0, 0, 10, 0));
         root.setTop(menuBar);
         root.setCenter(table);
         root.setRight(rightBox);
@@ -84,9 +87,16 @@ public class InventoryManagementGUI extends Application {
             menuEdit.getItems().addAll(addEntry, editEntry, deleteEntry);
         }
         
-        menuBar.getMenus().addAll(menuFile, menuEdit);
+        Menu menuHelp = new Menu("Help");
+        {
+            MenuItem about = new MenuItem("About");
+
+            menuHelp.getItems().addAll(about);
+        }
+        
+        menuBar.getMenus().addAll(menuFile, menuEdit, menuHelp);
     }
-    private void populateTable() {
+    private void initializeTable() {
         TableColumn nameCol = new TableColumn("Name");
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         TableColumn<Entry, String> numberCol = new TableColumn("Number");
@@ -94,8 +104,22 @@ public class InventoryManagementGUI extends Application {
         TableColumn notesCol = new TableColumn("Notes");
         notesCol.setCellValueFactory(new PropertyValueFactory<>("notes"));
         
-        table.setItems(entryList);
+        table.setItems(InventoryManagement.entryList);
         table.getColumns().addAll(nameCol, numberCol, notesCol);  
+    }
+    private void setupSidePanel() {
+        rightBox.getChildren().addAll(new Button("Add Entry"), new Button("Edit Entry"), new Button("Delete Entry"));
+    }
+    private void setupBottomFilter() {
+        TextField t = new TextField();
+        t.setPromptText("Filter");
+        bottomBox.getChildren().addAll(t);
+    }
+    private void setupMargins() {
+        BorderPane.setMargin(table, new Insets(0, 10, 10, 0));
+        BorderPane.setMargin(menuBar, new Insets(0, 0, 10, 0));
+        BorderPane.setMargin(rightBox, new Insets(0, 10, 0, 0));
+        BorderPane.setMargin(bottomBox, new Insets(5, 10, 5, 10));
     }
     public static void main(String[] args) {
         launch(args);
