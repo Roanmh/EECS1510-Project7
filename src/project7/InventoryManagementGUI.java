@@ -106,6 +106,7 @@ public class InventoryManagementGUI extends Application {
             });
 
             MenuItem deleteEntry = new MenuItem("Delete Entry");
+            deleteEntry.setAccelerator(new KeyCodeCombination(KeyCode.DELETE));
             deleteEntry.setOnAction((ActionEvent e) -> {
                 deleteEntryHandler();
             });
@@ -206,7 +207,7 @@ public class InventoryManagementGUI extends Application {
         System.out.println("openList");
         Stage stage = new Stage();
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open a new inventory list");
+        fileChooser.setTitle("Open an inventory list");
         fileChooser.setInitialDirectory(new File(".\\"));
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("*.inv", "*.inv"),
@@ -218,6 +219,17 @@ public class InventoryManagementGUI extends Application {
     }
     private void saveListHandler() {
         System.out.println("saveList");
+        Stage stage = new Stage();
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save an inventory list");
+        fileChooser.setInitialDirectory(new File(".\\"));
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("*.inv", "*.inv"),
+                new FileChooser.ExtensionFilter("All Files", "*.*")
+        );
+        File file = fileChooser.showSaveDialog(stage);
+        if (file == null) return;
+        InventoryManagement.saveInventory(file.getPath());
     }
     private void aboutHandler() {
         System.out.println("About");
