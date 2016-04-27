@@ -105,7 +105,7 @@ public class InventoryManagementGUI extends Application {
         notesCol.setCellValueFactory(new PropertyValueFactory<>("notes"));
         
         table.setItems(InventoryManagement.entryList);
-        table.getColumns().addAll(nameCol, numberCol, notesCol);  
+        table.getColumns().addAll(nameCol, numberCol, notesCol);
     }
     private void setupSidePanel() {
         rightBox.getChildren().addAll(new Button("Add Entry"), new Button("Edit Entry"), new Button("Delete Entry"));
@@ -113,13 +113,33 @@ public class InventoryManagementGUI extends Application {
     private void setupBottomFilter() {
         TextField t = new TextField();
         t.setPromptText("Filter");
-        bottomBox.getChildren().addAll(t);
+        t.setPrefWidth(500); //TODO: CHANGE TO WIDTH OF TABLE
+        ComboBox c = new ComboBox();
+        c.getItems().addAll(
+                "Name",
+                "Notes"
+        );
+        c.setValue("Name");
+        bottomBox.getChildren().addAll(t, c);
     }
     private void setupMargins() {
         BorderPane.setMargin(table, new Insets(0, 10, 10, 0));
         BorderPane.setMargin(menuBar, new Insets(0, 0, 10, 0));
         BorderPane.setMargin(rightBox, new Insets(0, 10, 0, 0));
         BorderPane.setMargin(bottomBox, new Insets(5, 10, 5, 10));
+    }
+    
+    private void addEntryHandler() {
+        
+    }
+    private void editEntryHandler() {
+        
+    }
+    private void deleteEntryHandler() {
+        
+    }
+    private void filterHandler() {
+        
     }
     public static void main(String[] args) {
         launch(args);

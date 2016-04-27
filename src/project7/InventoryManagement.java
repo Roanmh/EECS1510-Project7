@@ -77,7 +77,7 @@ public class InventoryManagement {
 
         if ("".equals(errMessage)) {
             entryList.add(new Entry(name, number, notes));
-            customSort(entryList);
+            //customSort(entryList);
         }
         
         return errMessage;
