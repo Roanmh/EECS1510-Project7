@@ -326,6 +326,14 @@ public class InventoryManagement {
         return filtList;
     }
     
+    public static String getFilterCriterion() {
+        return filterCriterion;
+    }
+
+    public static void setFilterCriterion(String filterCriterion) {
+        InventoryManagement.filterCriterion = filterCriterion;
+    }
+    
     /**
      * Get the feild that the filter will use
      * @return feild that the filter will use
