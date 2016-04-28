@@ -21,6 +21,7 @@ import javafx.collections.*;
 public class InventoryManagement {
     private static String invLocation = "";
     private static final ArrayList<Entry> ENTRY_LIST = new ArrayList<>();
+    private static String filterCriterion = "Name";
 
     /**
      * Finds an entry and returns the location or -1 if not found
@@ -301,7 +302,8 @@ public class InventoryManagement {
     }
     
     /**
-     * Returns a filtered (and observable) version of list given the string
+     * Returns a filtered (and observable) version of list given the string and
+     * 
      * 
      * @param filtStr String to filter the text by
      * @return ObserableList with only the elements to display
@@ -310,11 +312,34 @@ public class InventoryManagement {
         ObservableList<Entry> filtList;
         
         filtList = FXCollections.observableArrayList();
-        for (Entry e : ENTRY_LIST) {
-            if (e.getName().contains(filtStr)) filtList.add(e);
+        
+        if ("Notes".equals(filterCriterion)) {
+            for (Entry e : ENTRY_LIST) {
+                if (e.getNotes().contains(filtStr)) filtList.add(e);
+            }
+        } else {
+            for (Entry e : ENTRY_LIST) {
+                if (e.getName().contains(filtStr)) filtList.add(e);
+            }
         }
         
         return filtList;
+    }
+    
+    /**
+     * Get the feild that the filter will use
+     * @return feild that the filter will use
+     */
+    public static String getFilterCriterion() {
+        return filterCriterion;
+    }
+    
+    /**
+     * Set the feild that the filter will use
+     * @param filterCriterion feild that the filter will use
+     */
+    public static void setFilterCriterion(String filterCriterion) {
+        InventoryManagement.filterCriterion = filterCriterion;
     }
     
     /**
