@@ -22,6 +22,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.*;
+import javafx.scene.control.ButtonBar.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
@@ -182,6 +183,35 @@ public class InventoryManagementGUI extends Application {
     
     private void addEntryHandler() {
         System.out.println("addEntry");
+        Dialog dialog = new Dialog();
+        {
+            dialog.setTitle("Add Entry");
+            dialog.setHeaderText("Add Entry");
+            ButtonType loginButtonType = new ButtonType("Add", ButtonData.OK_DONE);
+            dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+            
+            GridPane grid = new GridPane();
+            grid.setHgap(10);
+            grid.setVgap(10);
+            grid.setPadding(new Insets(20, 150, 10, 10));
+            
+            TextField username = new TextField();
+            username.setPromptText("Name");
+            TextField number = new TextField();
+            number.setPromptText("Quantity");
+            TextField notes = new TextField();
+            notes.setPromptText("Notes");
+            
+            grid.add(new Label("Name:"), 0, 0);
+            grid.add(username, 1, 0);
+            grid.add(new Label("Quantity:"), 0, 1);
+            grid.add(number, 1, 1);
+            grid.add(new Label("Notes:"), 0, 2);
+            grid.add(notes, 1, 2);
+            
+            dialog.getDialogPane().setContent(grid);
+        }
+        dialog.showAndWait();
     }
     private void editEntryHandler() {
         System.out.println("editEntry");
@@ -213,6 +243,7 @@ public class InventoryManagementGUI extends Application {
         File file = fileChooser.showOpenDialog(stage);
         if (file == null) return;
         InventoryManagement.loadInventory(file.getPath());
+        updateTable();
     }
     private void saveListHandler() {
         System.out.println("saveList");
