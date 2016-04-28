@@ -325,26 +325,18 @@ public class InventoryManagement {
         
         return filtList;
     }
-    
-    public static String getFilterCriterion() {
-        return filterCriterion;
-    }
-
-    public static void setFilterCriterion(String filterCriterion) {
-        InventoryManagement.filterCriterion = filterCriterion;
-    }
-    
+        
     /**
-     * Get the feild that the filter will use
-     * @return feild that the filter will use
+     * Get the field that the filter will use
+     * @return field that the filter will use
      */
     public static String getFilterCriterion() {
         return filterCriterion;
     }
     
     /**
-     * Set the feild that the filter will use
-     * @param filterCriterion feild that the filter will use
+     * Set the field that the filter will use
+     * @param filterCriterion field that the filter will use
      */
     public static void setFilterCriterion(String filterCriterion) {
         InventoryManagement.filterCriterion = filterCriterion;
