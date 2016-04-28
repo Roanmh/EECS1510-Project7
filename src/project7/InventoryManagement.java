@@ -19,7 +19,7 @@ import java.util.*;
 import javafx.collections.*;
 
 public class InventoryManagement {
-    private static String invLocation = "Inventory\\Inventory.txt";
+    private static String invLocation = "";
     private static final ArrayList<Entry> ENTRY_LIST = new ArrayList<>();
 
     /**
@@ -165,7 +165,7 @@ public class InventoryManagement {
         String errMessage;
         File file;
         Scanner invIn;
-        String[] entryVals;
+        String[] entryVals = new String[3];
         
         invLocation = pathStr;
         
@@ -177,7 +177,7 @@ public class InventoryManagement {
             invIn = new Scanner(file);
             while (invIn.hasNextLine()) {
                 entryVals = invIn.nextLine().split("\t");
-                addEntry(entryVals[0], entryVals[1], entryVals[2]);
+                forceEntry(entryVals[0], entryVals[1], entryVals[2], true);
             }
         } catch (FileNotFoundException ex) {
             errMessage = "File not found.";
@@ -200,14 +200,15 @@ public class InventoryManagement {
         
         errMessage = "";
         try {
-            invOut = new PrintStream(invLocation);
+            invOut = new PrintStream(pathStr);
             for (Entry entryOut : ENTRY_LIST) {
-                System.out.printf("%s\t%s\t%s", entryOut.getName(),
+                invOut.printf("%s\t%s\t%s", entryOut.getName(),
                                   entryOut.getNumber(), entryOut.getNotes());
             }
             invOut.close();
         } catch (FileNotFoundException ex) {
-            errMessage = "File not found.";
+//            errMessage = "File not found.";
+            System.out.println(ex.getMessage());
         }
         
         return errMessage;
