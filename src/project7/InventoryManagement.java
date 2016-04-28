@@ -16,15 +16,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.collections.*;
 
 public class InventoryManagement {
-    public static final String INV_LOCATION = "Inventory\\Inventory.txt";
-    public final static ArrayList<Entry> entryList = new ArrayList<>();
-    //static ArrayList<Entry> entryList = new ArrayList<>();
-    
+    private static String invLocation = "Inventory\\Inventory.txt";
+    private static final ArrayList<Entry> ENTRY_LIST = new ArrayList<>();
+
     /**
      * Finds an entry and returns the location or -1 if not found
      * 
@@ -41,8 +38,8 @@ public class InventoryManagement {
         location = -1;
         
         // Search Algorithm
-        for (int i = 0; i < entryList.size(); ++i) {
-            if (customEquals(name, entryList.get(i).getName())) {
+        for (int i = 0; i < ENTRY_LIST.size(); ++i) {
+            if (customEquals(name, ENTRY_LIST.get(i).getName())) {
                 location = i;
             }
         }
@@ -62,15 +59,20 @@ public class InventoryManagement {
      * TODO: Force add/Overwrite entry mechanic
      * TODO: Better Entry Overwrite
      */
-    public static EntryReport addEntry(String name, String number, String notes) {
+    public static EntryReport addEntry(String name, String number,
+                                       String notes) {
         String errMessage;
         int foundIndex;
         Entry attemptedEntry;
         Entry foundEntry;
+        boolean addedSuccessfully;
     
         // Check for existing Entry
+        foundEntry = new Entry();
         foundIndex = findEntry(name);
-        foundEntry = entryList.get(foundIndex);
+        if (foundIndex != -1) {
+            foundEntry = ENTRY_LIST.get(foundIndex);
+        }
 
         // Name based Error Message creation
         errMessage = checkNameValidity(name);
@@ -79,13 +81,46 @@ public class InventoryManagement {
         }
 
         // If no errors of conflicting entry, make enty and sort
-        if ("".equals(errMessage) || foundEntry.exists()) {
-            entryList.add(new Entry(name, number, notes));
-            //customSort(entryList);
+        addedSuccessfully = false;
+        if ("".equals(errMessage) || !foundEntry.exists()) {
+            ENTRY_LIST.add(new Entry(name, number, notes));
+            customSort(ENTRY_LIST);
+            addedSuccessfully = true;
         }
         
         attemptedEntry = new Entry(name, number, notes);
-        return new EntryReport(attemptedEntry, foundEntry, foundIndex, errMessage);
+        return new EntryReport(attemptedEntry, foundEntry, foundIndex,
+                               errMessage, addedSuccessfully);
+    }
+    
+    /**
+     * Forces addition to array with out overwrite warning (will overwrite an
+     * entry with matching name). Allows option to overwrite name as well.
+     * 
+     * @param name Name to be entered (depending on overwriteName if editing
+     * existing entry)
+     * @param number Number to be entered
+     * @param notes Notes to be entered
+     * @param overwriteName Use this name if editing a matching entry
+     */
+    public static void forceEntry(String name, String number, String notes,
+                                  boolean overwriteName) {
+        int foundIndex;
+        Entry foundEntry;
+
+        // Check for existing Entry
+        foundIndex = findEntry(name);
+        
+        // Insert at end or overwrite existing extry w/ option to overwrite name
+        if (foundIndex == -1) {
+            ENTRY_LIST.add(new Entry(name, number, notes));
+        } else if (overwriteName) {
+            ENTRY_LIST.add(foundIndex, new Entry(name, number, notes));
+        } else {
+            ENTRY_LIST.add(foundIndex, new Entry(ENTRY_LIST.get(foundIndex).getName(), number, notes));
+        }
+        
+        customSort(ENTRY_LIST);
     }
     
     /**
@@ -112,8 +147,8 @@ public class InventoryManagement {
      * @return Error message if occurred
      */
     public static String deleteEntry(int index) {
-        if (index > 0 && index < entryList.size()) {
-            entryList.remove(index);
+        if (index > 0 && index < ENTRY_LIST.size()) {
+            ENTRY_LIST.remove(index);
             return "";
         } else {
             return "Index out of range.";
@@ -121,15 +156,20 @@ public class InventoryManagement {
     }
     
     /**
+     * Loads entries from a file into the stored inventory
      * 
-     * @param pathStr
-     * @return 
+     * @param pathStr Path to load from
+     * @return Error message if found
      */
     public static String loadInventory(String pathStr) {
         String errMessage;
         File file;
         Scanner invIn;
         String[] entryVals;
+        
+        invLocation = pathStr;
+        
+        ENTRY_LIST.clear();
         
         errMessage = "";
         file = new File(pathStr);
@@ -146,14 +186,22 @@ public class InventoryManagement {
         return errMessage;
     }
     
+    /**
+     * Store inventory into specified file
+     * 
+     * @param pathStr Location at which to store file
+     * @return Error message if found
+     * 
+     * TODO: Overwrite warning
+     */
     public static String saveInventory(String pathStr) {
         String errMessage;
         PrintStream invOut;
         
         errMessage = "";
         try {
-            invOut = new PrintStream(INV_LOCATION);
-            for (Entry entryOut : entryList) {
+            invOut = new PrintStream(invLocation);
+            for (Entry entryOut : ENTRY_LIST) {
                 System.out.printf("%s\t%s\t%s", entryOut.getName(),
                                   entryOut.getNumber(), entryOut.getNotes());
             }
@@ -232,15 +280,28 @@ public class InventoryManagement {
         return name1.equals(name2);
     }
     
+    /**
+     * Sorts entry objects based on their names
+     * 
+     * @param list List to be sorted (Affects list)
+     */
+    @SuppressWarnings("Convert2Lambda")
     private static void customSort(ArrayList<Entry> list) {
-        Collections.sort(list,
-                         (Entry e1, Entry e2) ->
-                                e1.getName().compareTo(e2.getName()));
-
+        Comparator entrycomparator;
+        
+        entrycomparator = new Comparator<Entry>() {
+            @Override
+            public int compare(Entry e1, Entry e2) {
+                return e1.getName().compareTo(e2.getName());
+            }
+        };
+        
+        Collections.sort(list, entrycomparator);
     }
     
     /**
-     * Returns a filtered version of list given the string
+     * Returns a filtered (and observable) version of list given the string
+     * 
      * @param filtStr String to filter the text by
      * @return ObserableList with only the elements to display
      */
@@ -248,10 +309,17 @@ public class InventoryManagement {
         ObservableList<Entry> filtList;
         
         filtList = FXCollections.observableArrayList();
-        for (Entry e : entryList) {
+        for (Entry e : ENTRY_LIST) {
             if (e.getName().contains(filtStr)) filtList.add(e);
         }
         
         return filtList;
     }
+    
+    /**
+     * Gets the last loaded path
+     * 
+     * @return Last loaded path
+     */
+    public static String getInvLoc() { return invLocation; }
 }
