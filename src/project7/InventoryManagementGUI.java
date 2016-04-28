@@ -13,7 +13,10 @@
 
 package project7;
 
+import java.io.File;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -24,14 +27,16 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class InventoryManagementGUI extends Application {
-    private final static TableView<Entry> table = new TableView<Entry>();
-    private final static MenuBar menuBar = new MenuBar();
-    private final static HBox bottomBox = new HBox();
-    private final static VBox rightBox = new VBox();
-    private final static BorderPane root = new BorderPane();
+    private static final TableView<Entry> TABLE = new TableView<>();
+    private static final MenuBar MENU_BAR = new MenuBar();
+    private static final HBox BOTTOM_BOX = new HBox();
+    private static final VBox RIGHT_BOX = new VBox();
+    private static final BorderPane ROOT = new BorderPane();
+    private static String filterText = "";
     
     @Override
     public void start(Stage primaryStage) {
@@ -39,20 +44,20 @@ public class InventoryManagementGUI extends Application {
         InventoryManagement.entryList.add(new Entry("ni", "6", "ksjhdkas"));
         
         addMenus();
-        initializeTable();
+        updateTable();
         setupSidePanel();
         setupBottomFilter();
         setupMargins();
         
         //table.setPadding(new Insets(10));
-        BorderPane.setMargin(table, new Insets(0, 10, 0, 10));
-        BorderPane.setMargin(menuBar, new Insets(0, 0, 10, 0));
-        root.setTop(menuBar);
-        root.setCenter(table);
-        root.setRight(rightBox);
-        root.setBottom(bottomBox);
+        BorderPane.setMargin(TABLE, new Insets(0, 10, 0, 10));
+        BorderPane.setMargin(MENU_BAR, new Insets(0, 0, 10, 0));
+        ROOT.setTop(MENU_BAR);
+        ROOT.setCenter(TABLE);
+        ROOT.setRight(RIGHT_BOX);
+        ROOT.setBottom(BOTTOM_BOX);
         
-        Scene scene = new Scene(root, 800, 400);
+        Scene scene = new Scene(ROOT, 800, 400);
         
         primaryStage.setTitle("Inventory Management");
         primaryStage.setScene(scene);
@@ -63,15 +68,27 @@ public class InventoryManagementGUI extends Application {
         {
             MenuItem newList = new MenuItem("New List");
             newList.setAccelerator(KeyCombination.keyCombination("Ctrl+N"));
+            newList.setOnAction((ActionEvent e) -> {
+                newListHandler();
+            });
 
             MenuItem openList = new MenuItem("Open List");
             openList.setAccelerator(KeyCombination.keyCombination("Ctrl+O"));
+            openList.setOnAction((ActionEvent e) -> {
+                openListHandler();
+            });
 
             MenuItem saveList = new MenuItem("Save List");
             saveList.setAccelerator(KeyCombination.keyCombination("Ctrl+S"));
+            saveList.setOnAction((ActionEvent e) -> {
+                saveListHandler();
+            });
 
             MenuItem exit = new MenuItem("Exit");
             exit.setAccelerator(KeyCombination.keyCombination("Ctrl+Q"));
+            exit.setOnAction((ActionEvent e) -> {
+                System.exit(0);
+            });
 
             menuFile.getItems().addAll(newList, openList, saveList, new SeparatorMenuItem(), exit);
         }
@@ -79,10 +96,20 @@ public class InventoryManagementGUI extends Application {
         Menu menuEdit = new Menu("Edit");
         {
             MenuItem addEntry = new MenuItem("Add Entry");
+            addEntry.setOnAction((ActionEvent e) -> {
+                addEntryHandler();
+            });
 
             MenuItem editEntry = new MenuItem("Edit Entry");
+            editEntry.setOnAction((ActionEvent e) -> {
+                editEntryHandler();
+            });
 
             MenuItem deleteEntry = new MenuItem("Delete Entry");
+            deleteEntry.setAccelerator(new KeyCodeCombination(KeyCode.DELETE));
+            deleteEntry.setOnAction((ActionEvent e) -> {
+                deleteEntryHandler();
+            });
 
             menuEdit.getItems().addAll(addEntry, editEntry, deleteEntry);
         }
@@ -90,13 +117,17 @@ public class InventoryManagementGUI extends Application {
         Menu menuHelp = new Menu("Help");
         {
             MenuItem about = new MenuItem("About");
+            about.setOnAction((ActionEvent e) -> {
+                aboutHandler();
+            });
 
             menuHelp.getItems().addAll(about);
         }
         
-        menuBar.getMenus().addAll(menuFile, menuEdit, menuHelp);
+        MENU_BAR.getMenus().addAll(menuFile, menuEdit, menuHelp);
     }
-    private void initializeTable() {
+    private void updateTable() {
+        TABLE.getColumns().clear();
         TableColumn nameCol = new TableColumn("Name");
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         TableColumn<Entry, String> numberCol = new TableColumn("Number");
@@ -104,42 +135,104 @@ public class InventoryManagementGUI extends Application {
         TableColumn notesCol = new TableColumn("Notes");
         notesCol.setCellValueFactory(new PropertyValueFactory<>("notes"));
         
-        table.setItems(InventoryManagement.entryList);
-        table.getColumns().addAll(nameCol, numberCol, notesCol);
+        TABLE.setItems(InventoryManagement.filteredEntries(filterText));
+        TABLE.getColumns().addAll(nameCol, numberCol, notesCol);
     }
     private void setupSidePanel() {
-        rightBox.getChildren().addAll(new Button("Add Entry"), new Button("Edit Entry"), new Button("Delete Entry"));
+        Button addEntry = new Button("Add Entry");
+        addEntry.setOnAction((ActionEvent e) -> {
+            addEntryHandler();
+        });
+
+        Button editEntry = new Button("Edit Entry");
+        editEntry.setOnAction((ActionEvent e) -> {
+            editEntryHandler();
+        });
+
+        Button deleteEntry = new Button("Delete Entry");
+        deleteEntry.setOnAction((ActionEvent e) -> {
+            deleteEntryHandler();
+        });
+        RIGHT_BOX.getChildren().addAll(addEntry, editEntry, deleteEntry);
     }
     private void setupBottomFilter() {
         TextField t = new TextField();
         t.setPromptText("Filter");
         t.setPrefWidth(500); //TODO: CHANGE TO WIDTH OF TABLE
+        t.setOnKeyReleased((KeyEvent e) -> {
+            filterHandler(t.getText());
+        });
         ComboBox c = new ComboBox();
         c.getItems().addAll(
                 "Name",
                 "Notes"
         );
         c.setValue("Name");
-        bottomBox.getChildren().addAll(t, c);
+        c.valueProperty().addListener(new ChangeListener<String>() {
+            @Override 
+            public void changed(ObservableValue ov, String t, String t1) {                
+                filterChoiceHandler();
+            }
+        });
+        BOTTOM_BOX.getChildren().addAll(t, c);
     }
     private void setupMargins() {
-        BorderPane.setMargin(table, new Insets(0, 10, 10, 0));
-        BorderPane.setMargin(menuBar, new Insets(0, 0, 10, 0));
-        BorderPane.setMargin(rightBox, new Insets(0, 10, 0, 0));
-        BorderPane.setMargin(bottomBox, new Insets(5, 10, 5, 10));
+        BorderPane.setMargin(TABLE, new Insets(0, 10, 10, 0));
+        BorderPane.setMargin(MENU_BAR, new Insets(0, 0, 10, 0));
+        BorderPane.setMargin(RIGHT_BOX, new Insets(0, 10, 0, 0));
+        BorderPane.setMargin(BOTTOM_BOX, new Insets(5, 10, 5, 10));
     }
     
     private void addEntryHandler() {
-        
+        System.out.println("addEntry");
     }
     private void editEntryHandler() {
-        
+        System.out.println("editEntry");
     }
     private void deleteEntryHandler() {
-        
+        System.out.println("deleteEntry");
     }
-    private void filterHandler() {
-        
+    private void filterHandler(String s) {
+        System.out.println("FILTER!");
+        filterText = s;
+        updateTable();
+    }
+    private void filterChoiceHandler() {
+        System.out.println("CHANGED");
+    }
+    private void newListHandler() {
+        System.out.println("newList");
+    }
+    private void openListHandler() {
+        System.out.println("openList");
+        Stage stage = new Stage();
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open an inventory list");
+        fileChooser.setInitialDirectory(new File(".\\"));
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("*.inv", "*.inv"),
+                new FileChooser.ExtensionFilter("All Files", "*.*")
+        );
+        File file = fileChooser.showOpenDialog(stage);
+        if (file == null) return;
+        InventoryManagement.loadInventory(file.getPath());
+    }
+    private void saveListHandler() {
+        System.out.println("saveList");
+        Stage stage = new Stage();
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save an inventory list");
+        fileChooser.setInitialDirectory(new File(".\\"));
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("*.inv", "*.inv"),
+                new FileChooser.ExtensionFilter("All Files", "*.*")
+        );
+        File file = fileChooser.showSaveDialog(stage);
+        if (file == null) return;
+        InventoryManagement.saveInventory(file.getPath());
+    }
+    private void aboutHandler() {
+        System.out.println("About");
     }
     public static void main(String[] args) {
         launch(args);

@@ -1,14 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package project7;
 
-/**
- *
- * @author rmartin-
- */
 public class EntryReport {
     private final Entry ATTEMPTED_ENTRY;
     private final Entry FOUND_ENTRY;
