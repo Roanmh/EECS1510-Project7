@@ -17,11 +17,8 @@ import java.io.File;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.*;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.*;
@@ -40,8 +37,8 @@ public class InventoryManagementGUI extends Application {
     
     @Override
     public void start(Stage primaryStage) {
-        InventoryManagement.entryList.add(new Entry());
-        InventoryManagement.entryList.add(new Entry("ni", "6", "ksjhdkas"));
+        InventoryManagement.addEntry("Nuts", "100", "Very Nutty");
+        InventoryManagement.addEntry("Soup", "6", "Very Soupy");
         
         addMenus();
         updateTable();
