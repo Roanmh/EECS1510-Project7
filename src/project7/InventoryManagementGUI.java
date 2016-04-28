@@ -39,6 +39,9 @@ public class InventoryManagementGUI extends Application {
     
     @Override
     public void start(Stage primaryStage) {
+        InventoryManagement.addEntry("Nuts", "100", "Very Nutty");
+        InventoryManagement.addEntry("Soup", "6", "Very Soupy");
+        
         addMenus();
         updateTable();
         setupSidePanel();
