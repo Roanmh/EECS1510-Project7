@@ -14,6 +14,7 @@
 package project7;
 
 import java.io.File;
+import java.util.Optional;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -172,7 +173,7 @@ public class InventoryManagementGUI extends Application {
         c.valueProperty().addListener(new ChangeListener<String>() {
             @Override 
             public void changed(ObservableValue ov, String t, String t1) {                
-                filterChoiceHandler();
+                filterChoiceHandler(t1);
             }
         });
         BOTTOM_BOX.getChildren().addAll(t, c);
@@ -187,34 +188,35 @@ public class InventoryManagementGUI extends Application {
     private void addEntryHandler() {
         System.out.println("addEntry");
         Dialog dialog = new Dialog();
-        {
-            dialog.setTitle("Add Entry");
-            dialog.setHeaderText("Add Entry");
-            ButtonType loginButtonType = new ButtonType("Add", ButtonData.OK_DONE);
-            dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
-            
-            GridPane grid = new GridPane();
-            grid.setHgap(10);
-            grid.setVgap(10);
-            grid.setPadding(new Insets(20, 150, 10, 10));
-            
-            TextField username = new TextField();
-            username.setPromptText("Name");
-            TextField number = new TextField();
-            number.setPromptText("Quantity");
-            TextField notes = new TextField();
-            notes.setPromptText("Notes");
-            
-            grid.add(new Label("Name:"), 0, 0);
-            grid.add(username, 1, 0);
-            grid.add(new Label("Quantity:"), 0, 1);
-            grid.add(number, 1, 1);
-            grid.add(new Label("Notes:"), 0, 2);
-            grid.add(notes, 1, 2);
-            
-            dialog.getDialogPane().setContent(grid);
-        }
-        dialog.showAndWait();
+        dialog.setTitle("Add Entry");
+        dialog.setHeaderText("Add Entry");
+        ButtonType loginButtonType = new ButtonType("Add", ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        TextField name = new TextField();
+        name.setPromptText("Name");
+        TextField number = new TextField();
+        number.setPromptText("Quantity");
+        TextField notes = new TextField();
+        notes.setPromptText("Notes");
+
+        grid.add(new Label("Name:"), 0, 0);
+        grid.add(name, 1, 0);
+        grid.add(new Label("Quantity:"), 0, 1);
+        grid.add(number, 1, 1);
+        grid.add(new Label("Notes:"), 0, 2);
+        grid.add(notes, 1, 2);
+
+        dialog.getDialogPane().setContent(grid);
+        Optional<ButtonType> result = dialog.showAndWait();
+        System.out.println(result.get());
+        if (result.get().getButtonData() == ButtonData.OK_DONE) InventoryManagement.addEntry(name.getText(), number.getText(), notes.getText());
+        updateTable();
     }
     private void editEntryHandler() {
         System.out.println("editEntry");
@@ -227,8 +229,9 @@ public class InventoryManagementGUI extends Application {
         filterText = s;
         updateTable();
     }
-    private void filterChoiceHandler() {
+    private void filterChoiceHandler(String type) {
         System.out.println("CHANGED");
+        
     }
     private void newListHandler() {
         System.out.println("newList");
