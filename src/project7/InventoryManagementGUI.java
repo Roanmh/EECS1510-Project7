@@ -16,6 +16,7 @@ package project7;
 import java.io.File;
 import java.util.Optional;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -210,6 +211,8 @@ public class InventoryManagementGUI extends Application {
         grid.add(notes, 1, 2);
 
         dialog.getDialogPane().setContent(grid);
+        Platform.runLater(() -> name.requestFocus());
+        
         Optional<ButtonType> result = dialog.showAndWait();
         System.out.println(result.get());
         if (result.get().getButtonData() == ButtonData.OK_DONE) InventoryManagement.addEntry(name.getText(), number.getText(), notes.getText());
