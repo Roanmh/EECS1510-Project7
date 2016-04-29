@@ -111,6 +111,13 @@ public class InventoryManagement {
         ENTRY_LIST.add(new Entry(name, number, notes));
         customSort(ENTRY_LIST);
     }
+    
+    public static void editEntry(Entry replacedEntry, String name,
+                                  String number, String notes) {
+        ENTRY_LIST.add(ENTRY_LIST.indexOf(replacedEntry), new Entry(name, number, notes));
+        deleteEntry(replacedEntry);
+        customSort(ENTRY_LIST);
+    }
 
     
     /**

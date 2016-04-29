@@ -234,7 +234,51 @@ public class InventoryManagementGUI extends Application {
         updateTable();
     }
     private void editEntryHandler() {
+        Entry entry;
+        
         System.out.println("editEntry");
+        
+        Dialog dialog = new Dialog();
+        dialog.setTitle("Edit Entry");
+        dialog.setHeaderText("Edit Entry");
+        ButtonType loginButtonType = new ButtonType("Edit", ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        TextField name = new TextField();
+        name.setPromptText("Name");
+        TextField number = new TextField();
+        number.setPromptText("Quantity");
+        TextField notes = new TextField();
+        notes.setPromptText("Notes");
+        
+        entry = TABLE.getSelectionModel().getSelectedItem();
+        name.setText(entry.getName());
+        number.setText(entry.getNumber());
+        notes.setText(entry.getNotes());
+
+        grid.add(new Label("Name:"), 0, 0);
+        grid.add(name, 1, 0);
+        grid.add(new Label("Quantity:"), 0, 1);
+        grid.add(number, 1, 1);
+        grid.add(new Label("Notes:"), 0, 2);
+        grid.add(notes, 1, 2);
+
+        dialog.getDialogPane().setContent(grid);
+        Platform.runLater(() -> name.requestFocus());
+        
+        Optional<ButtonType> result = dialog.showAndWait();
+        System.out.println(result.get());
+        if (result.get().getButtonData() == ButtonData.OK_DONE) {
+            InventoryManagement.editEntry(entry, name.getText(), number.getText(),
+                                         notes.getText());
+        }
+        updateTable();
+
     }
     private void deleteEntryHandler() {
         System.out.println("deleteEntry");
