@@ -13,6 +13,7 @@
 
 package project7;
 
+import java.awt.Shape;
 import java.io.File;
 import java.util.Optional;
 import javafx.application.Application;
@@ -156,7 +157,16 @@ public class InventoryManagementGUI extends Application {
         deleteEntry.setOnAction((ActionEvent e) -> {
             deleteEntryHandler();
         });
-        RIGHT_BOX.getChildren().addAll(addEntry, editEntry, deleteEntry);
+        
+        addEntry.setMaxWidth(Double.MAX_VALUE);
+        editEntry.setMaxWidth(Double.MAX_VALUE);
+        deleteEntry.setMaxWidth(Double.MAX_VALUE);
+        
+        VBox vBoxButtons = new VBox();
+        vBoxButtons.setSpacing(5);
+        vBoxButtons.getChildren().addAll(addEntry, editEntry, deleteEntry);
+        
+        RIGHT_BOX.getChildren().add(vBoxButtons);
     }
     private void setupBottomFilter() {
         TextField t = new TextField();
