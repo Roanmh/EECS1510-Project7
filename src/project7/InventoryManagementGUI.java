@@ -269,7 +269,6 @@ public class InventoryManagementGUI extends Application {
         if (file == null) return;
         InventoryManagement.saveInventory(file.getPath());
         primaryStage.setTitle("Invetory Management - " + file.getName());
-
     }
     private void aboutHandler() {
         System.out.println("About");
