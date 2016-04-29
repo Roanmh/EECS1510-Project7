@@ -35,9 +35,12 @@ public class InventoryManagementGUI extends Application {
     private static final VBox RIGHT_BOX = new VBox();
     private static final BorderPane ROOT = new BorderPane();
     private static String filterText = "";
+    private static Stage primaryStage = null;
     
     @Override
     public void start(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+        
         InventoryManagement.addEntry("Nuts", "100", "Very Nutty");
         InventoryManagement.addEntry("Soup", "6", "Very Soupy");
         
@@ -244,6 +247,7 @@ public class InventoryManagementGUI extends Application {
         if (file == null) return;
         InventoryManagement.loadInventory(file.getPath());
         updateTable();
+        primaryStage.setTitle("Invetory Management - " + file.getName());
     }
     private void saveListHandler() {
         System.out.println("saveList");
@@ -258,6 +262,8 @@ public class InventoryManagementGUI extends Application {
         File file = fileChooser.showSaveDialog(stage);
         if (file == null) return;
         InventoryManagement.saveInventory(file.getPath());
+        primaryStage.setTitle("Invetory Management - " + file.getName());
+
     }
     private void aboutHandler() {
         System.out.println("About");
