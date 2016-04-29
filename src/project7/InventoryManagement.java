@@ -296,6 +296,27 @@ public class InventoryManagement {
     }
     
     /**
+     * Returns whether testStr contains filterStr. Case and external whitespace
+     * ignored
+     * 
+     * @param testStr String to be checked for filterStr
+     * @param filterStr String to be found in testStr
+     * @return They are equal
+     */
+    public static boolean customContains(String testStr, String filterStr) {
+        
+        // Ingore case
+        testStr = testStr.toLowerCase();
+        filterStr = filterStr.toLowerCase();
+        
+        // Ignore external whitespace
+        testStr = testStr.trim();
+        filterStr = filterStr.trim();
+        
+        return testStr.contains(filterStr);
+    }
+    
+    /**
      * Sorts entry objects based on their names
      * 
      * @param list List to be sorted (Affects list)
@@ -325,14 +346,13 @@ public class InventoryManagement {
         ObservableList<Entry> filtList;
         
         filtList = FXCollections.observableArrayList();
-        
         if ("Notes".equals(filterCriterion)) {
             for (Entry e : ENTRY_LIST) {
-                if (e.getNotes().contains(filtStr)) filtList.add(e);
+                if (customContains(e.getNotes(), filtStr)) filtList.add(e);
             }
         } else {
             for (Entry e : ENTRY_LIST) {
-                if (e.getName().contains(filtStr)) filtList.add(e);
+                if (customContains(e.getName(), filtStr)) filtList.add(e);
             }
         }
         
