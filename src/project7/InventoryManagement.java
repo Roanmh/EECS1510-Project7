@@ -216,6 +216,19 @@ public class InventoryManagement {
     }
     
     /**
+     * Clears entire Inventory (for new list)
+     * 
+     * @return errors, if found.
+     */
+    public static String clearInventory() {
+        String errMessage;
+        
+        ENTRY_LIST.clear();
+        errMessage = "";
+        return errMessage;
+    }
+    
+    /**
      * Checks that a name is formatted correctly
      * 
      * @param name Name to be tested
