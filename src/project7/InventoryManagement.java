@@ -156,6 +156,21 @@ public class InventoryManagement {
         }
     }
     
+        /**
+     * Deletes entry as specified by the object itself
+     * 
+     * @param entry Object to delete
+     * @return Error message if occurred
+     */
+    public static String deleteEntry(Entry entry) {
+        String errMessage;
+        
+        errMessage = "";
+        ENTRY_LIST.remove(entry);
+        
+        return errMessage;
+    }
+    
     /**
      * Loads entries from a file into the stored inventory
      * 

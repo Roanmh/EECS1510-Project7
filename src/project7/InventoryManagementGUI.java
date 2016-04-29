@@ -218,7 +218,10 @@ public class InventoryManagementGUI extends Application {
         
         Optional<ButtonType> result = dialog.showAndWait();
         System.out.println(result.get());
-        if (result.get().getButtonData() == ButtonData.OK_DONE) InventoryManagement.addEntry(name.getText(), number.getText(), notes.getText());
+        if (result.get().getButtonData() == ButtonData.OK_DONE) {
+            InventoryManagement.addEntry(name.getText(), number.getText(),
+                                         notes.getText());
+        }
         updateTable();
     }
     private void editEntryHandler() {
@@ -226,6 +229,10 @@ public class InventoryManagementGUI extends Application {
     }
     private void deleteEntryHandler() {
         System.out.println("deleteEntry");
+        
+        InventoryManagement.deleteEntry(TABLE.getSelectionModel().
+                                        getSelectedItem());
+        updateTable();
     }
     private void filterHandler(String s) {
         System.out.println("FILTER!");
