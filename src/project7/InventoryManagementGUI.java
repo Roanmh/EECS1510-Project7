@@ -41,7 +41,7 @@ public class InventoryManagementGUI extends Application {
     
     @Override
     public void start(Stage primaryStage) {
-        this.primaryStage = primaryStage;
+        InventoryManagementGUI.primaryStage = primaryStage;
         
         InventoryManagement.addEntry("Nuts", "100", "Very Nutty");
         InventoryManagement.addEntry("Soup", "6", "Very Soupy");
@@ -235,9 +235,28 @@ public class InventoryManagementGUI extends Application {
     private void filterChoiceHandler(String type) {
         System.out.println("CHANGED");
         
+        InventoryManagement.setFilterCriterion(type);
+        updateTable();
+        
     }
     private void newListHandler() {
         System.out.println("newList");
+                
+        Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
+        
+        confirmation.setTitle("New List Confirmation");
+        confirmation.setHeaderText("New List Confirmation");
+        confirmation.setContentText("Current list will be " +
+                                    "permanently deleted.");
+        
+        ButtonType confirmButtonType = new ButtonType("Proceed", ButtonData.YES);
+        confirmation.getButtonTypes().set(0, confirmButtonType);
+        
+        Optional<ButtonType> result = confirmation.showAndWait();
+        if (result.isPresent() && result.get() == confirmButtonType) {
+            InventoryManagement.clearInventory();
+            updateTable();    
+        }      
     }
     private void openListHandler() {
         System.out.println("openList");
