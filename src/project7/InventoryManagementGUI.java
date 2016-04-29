@@ -13,7 +13,6 @@
 
 package project7;
 
-import java.awt.Shape;
 import java.io.File;
 import java.util.Optional;
 import javafx.application.Application;
@@ -312,5 +311,4 @@ public class InventoryManagementGUI extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-    
 }

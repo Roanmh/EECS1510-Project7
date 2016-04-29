@@ -1,43 +1,57 @@
 package project7;
 
+import javafx.collections.ObservableList;
+
 public class EntryReport {
     private final Entry ATTEMPTED_ENTRY;
-    private final Entry FOUND_ENTRY;
-    private final int FOUND_INDEX;
-    private final boolean HAS_FOUND_ENTRY;
-    private final boolean ADDED_SUCCESFULLY;
-    private final String ERROR_MESSAGE;
+    private final ObservableList<Entry> NAME_MATCHES;
+    private final ObservableList<Entry> WHOLE_MATCHES;
+    private final ObservableList<String> ERR_MESSAGES;
+    private final boolean ERROR_FLAG;
+    private final boolean NAME_MATCHES_FLAG;
+    private final boolean WHOLE_MATCHES_FLAG;
 
-    public EntryReport(Entry attemptedEntry) {
-        this(attemptedEntry, new Entry(), -1, "", true);
-    }
-    
-    public EntryReport(Entry attemptedEntry, String errMessage) {
-        this(attemptedEntry, new Entry(), -1, errMessage, "".equals(errMessage));
-    }
-    
-    public EntryReport(Entry attemptedEntry, Entry foundEntry, int foundIndex) {
-        
-        // For addedSuccesfully: true if (no found entry && default index)
-        this(attemptedEntry, foundEntry, foundIndex, "",
-                (!foundEntry.exists() && (foundIndex == -1)));
-    }
-    
-    public EntryReport(Entry attemptedEntry, Entry foundEntry, int foundIndex,
-                       String errMessage, boolean addedSuccesfully) {
+    public EntryReport(Entry attemptedEntry, ObservableList<Entry> nameMatches,
+                       ObservableList<Entry> wholeMatches,
+                       ObservableList<String> errMessages) {
         this.ATTEMPTED_ENTRY = attemptedEntry;
-        this.FOUND_ENTRY = foundEntry;
-        this.HAS_FOUND_ENTRY = foundEntry.exists();
-        this.FOUND_INDEX = foundIndex;
-        this.ERROR_MESSAGE = errMessage;
-        this.ADDED_SUCCESFULLY = addedSuccesfully;
+        this.NAME_MATCHES = nameMatches;
+        this.WHOLE_MATCHES = wholeMatches;
+        this.ERR_MESSAGES = errMessages;
+        this.ERROR_FLAG = !errMessages.isEmpty();
+        this.NAME_MATCHES_FLAG = !nameMatches.isEmpty();
+        this.WHOLE_MATCHES_FLAG = !wholeMatches.isEmpty();
     }
     
-    public Entry getAttemptedEntry() { return ATTEMPTED_ENTRY; }
-    public Entry getFoundEntry() { return FOUND_ENTRY; }
-    public int getFoundIndex() { return FOUND_INDEX; }
-    public boolean hasFoundEntry() { return HAS_FOUND_ENTRY; }
-    public String getErrorMessage() { return ERROR_MESSAGE; }
-    public boolean addedSuccesfully() { return ADDED_SUCCESFULLY; }
+    public Entry getATTEMPTED_ENTRY() {
+        return ATTEMPTED_ENTRY;
+    }
 
+    public ObservableList<Entry> getNAME_MATCHES() {
+        return NAME_MATCHES;
+    }
+
+    public ObservableList<Entry> getWHOLE_MATCHES() {
+        return WHOLE_MATCHES;
+    }
+
+    public ObservableList<String> getERR_MESSAGES() {
+        return ERR_MESSAGES;
+    }
+
+    public boolean isERROR_FLAG() {
+        return ERROR_FLAG;
+    }
+
+    public boolean isNAME_MATCHES_FLAG() {
+        return NAME_MATCHES_FLAG;
+    }
+
+    public boolean isWHOLE_MATCHES_FLAG() {
+        return WHOLE_MATCHES_FLAG;
+    }
+    
+    public boolean isAnyMatches() {
+        return NAME_MATCHES_FLAG && WHOLE_MATCHES_FLAG;
+    }
 }

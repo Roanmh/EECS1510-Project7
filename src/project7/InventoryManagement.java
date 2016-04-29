@@ -22,6 +22,7 @@ public class InventoryManagement {
     private static String invLocation = "";
     private static final ArrayList<Entry> ENTRY_LIST = new ArrayList<>();
     private static String filterCriterion = "Name";
+    public static enum forceBehavior { ORIGINAL, NEW };
 
     /**
      * Finds an entry and returns the location or -1 if not found
@@ -60,69 +61,57 @@ public class InventoryManagement {
      * TODO: Force add/Overwrite entry mechanic
      * TODO: Better Entry Overwrite
      */
-    public static EntryReport addEntry(String name, String number,
+    public static EntryReport checkAddEntry(String name, String number,
                                        String notes) {
-        String errMessage;
-        int foundIndex;
         Entry attemptedEntry;
-        Entry foundEntry;
-        boolean addedSuccessfully;
+        ObservableList<String> errMessages;
+        ObservableList<Entry> nameMatches;
+        ObservableList<Entry> wholeMatches;
     
-        // Check for existing Entry
-        foundEntry = new Entry();
-        foundIndex = findEntry(name);
-        if (foundIndex != -1) {
-            foundEntry = ENTRY_LIST.get(foundIndex);
+        // Find Name Matches
+        nameMatches = FXCollections.observableArrayList();
+        for (Entry e : ENTRY_LIST) {
+            if (customEquals(e.getName(), name)) { 
+                nameMatches.add(e);
+            }
         }
-
-        // Name based Error Message creation
-        errMessage = checkNameValidity(name);
-        if (!"".equals(errMessage)) {
-            errMessage = checkNumberValidty(number);
+                
+        // Find whole Matches
+        wholeMatches = FXCollections.observableArrayList();
+        for (Entry e : ENTRY_LIST) {
+            if (customEquals(e.getName(), name) &&
+                customEquals(e.getNumber(), number) &&
+                customEquals(e.getNotes(), notes)) wholeMatches.add(e);
         }
-
-        // If no errors of conflicting entry, make enty and sort
-        addedSuccessfully = false;
-        if ("".equals(errMessage) || !foundEntry.exists()) {
-            ENTRY_LIST.add(new Entry(name, number, notes));
-            customSort(ENTRY_LIST);
-            addedSuccessfully = true;
-        }
+                
         
+        // Name based Error Message creation
+        errMessages = FXCollections.observableArrayList();
+        if (!"".equals(checkNameValidity(name))) {
+            errMessages.add(checkNameValidity(name));
+        }
+        if (!"".equals(checkNumberValidty(number))) {
+            errMessages.add(checkNumberValidty(number));
+        }
+
         attemptedEntry = new Entry(name, number, notes);
-        return new EntryReport(attemptedEntry, foundEntry, foundIndex,
-                               errMessage, addedSuccessfully);
+        
+        return new EntryReport(attemptedEntry, nameMatches, wholeMatches, errMessages);
     }
     
     /**
-     * Forces addition to array with out overwrite warning (will overwrite an
-     * entry with matching name). Allows option to overwrite name as well.
+     * Adds entry (regardless of duplicate status).
      * 
      * @param name Name to be entered (depending on overwriteName if editing
      * existing entry)
      * @param number Number to be entered
      * @param notes Notes to be entered
-     * @param overwriteName Use this name if editing a matching entry
      */
-    public static void forceEntry(String name, String number, String notes,
-                                  boolean overwriteName) {
-        int foundIndex;
-        Entry foundEntry;
-
-        // Check for existing Entry
-        foundIndex = findEntry(name);
-        
-        // Insert at end or overwrite existing extry w/ option to overwrite name
-        if (foundIndex == -1) {
-            ENTRY_LIST.add(new Entry(name, number, notes));
-        } else if (overwriteName) {
-            ENTRY_LIST.add(foundIndex, new Entry(name, number, notes));
-        } else {
-            ENTRY_LIST.add(foundIndex, new Entry(ENTRY_LIST.get(foundIndex).getName(), number, notes));
-        }
-        
+    public static void addEntry(String name, String number, String notes) {
+        ENTRY_LIST.add(new Entry(name, number, notes));
         customSort(ENTRY_LIST);
     }
+
     
     /**
      * Finds entry by name and deletes it.
@@ -181,7 +170,7 @@ public class InventoryManagement {
         String errMessage;
         File file;
         Scanner invIn;
-        String[] entryVals = new String[3];
+        String[] entryVals;
         
         invLocation = pathStr;
         
@@ -193,7 +182,7 @@ public class InventoryManagement {
             invIn = new Scanner(file);
             while (invIn.hasNextLine()) {
                 entryVals = invIn.nextLine().split("\t");
-                forceEntry(entryVals[0], entryVals[1], entryVals[2], true);
+                addEntry(entryVals[0], entryVals[1], entryVals[2]);
             }
         } catch (FileNotFoundException ex) {
             errMessage = "File not found.";
