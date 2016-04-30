@@ -49,7 +49,6 @@ public class InventoryManagementGUI extends Application {
         addMenus();
         updateTable();
         setupSidePanel();
-        setupBottomFilter();
         setupMargins();
         
         //table.setPadding(new Insets(10));
@@ -62,9 +61,10 @@ public class InventoryManagementGUI extends Application {
         
         Scene scene = new Scene(ROOT, 800, 400);
         
-        primaryStage.setTitle("Inventory Management");
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        InventoryManagementGUI.primaryStage.setTitle("Inventory Management");
+        InventoryManagementGUI.primaryStage.setScene(scene);
+        InventoryManagementGUI.primaryStage.show();
+        setupBottomFilter();
     }
     private void addMenus() {
         Menu menuFile = new Menu("File");
@@ -140,6 +140,7 @@ public class InventoryManagementGUI extends Application {
         
         TABLE.setItems(InventoryManagement.filteredEntries(filterText));
         TABLE.getColumns().addAll(nameCol, numberCol, notesCol);
+        TABLE.setPlaceholder(new Label("No entries found"));
     }
     private void setupSidePanel() {
         Button addEntry = new Button("Add Entry");
@@ -168,31 +169,35 @@ public class InventoryManagementGUI extends Application {
         RIGHT_BOX.getChildren().add(vBoxButtons);
     }
     private void setupBottomFilter() {
-        TextField t = new TextField();
-        t.setPromptText("Filter");
-        t.setPrefWidth(500); //TODO: CHANGE TO WIDTH OF TABLE
-        t.setOnKeyReleased((KeyEvent e) -> {
-            filterHandler(t.getText());
+        TextField filter = new TextField();
+        filter.setPromptText("Filter");
+        filter.prefWidthProperty().bind(TABLE.widthProperty());
+        filter.setOnKeyReleased((KeyEvent e) -> {
+            filterHandler(filter.getText());
         });
-        ComboBox c = new ComboBox();
-        c.getItems().addAll(
+        
+        ComboBox criteria = new ComboBox();
+        criteria.getItems().addAll(
                 "Name",
                 "Notes"
         );
-        c.setValue("Name");
-        c.valueProperty().addListener(new ChangeListener<String>() {
+        criteria.setValue("Name");
+        criteria.setMaxWidth(Double.MAX_VALUE);
+        criteria.valueProperty().addListener(new ChangeListener<String>() {
             @Override 
-            public void changed(ObservableValue ov, String t, String t1) {                
-                filterChoiceHandler(t1);
+            public void changed(ObservableValue ov, String oldStr, String newStr) {                
+                filterChoiceHandler(newStr);
             }
         });
-        BOTTOM_BOX.getChildren().addAll(t, c);
+        
+        BOTTOM_BOX.setSpacing(10);
+        BOTTOM_BOX.getChildren().addAll(filter, criteria);
     }
     private void setupMargins() {
         BorderPane.setMargin(TABLE, new Insets(0, 10, 10, 0));
         BorderPane.setMargin(MENU_BAR, new Insets(0, 0, 10, 0));
         BorderPane.setMargin(RIGHT_BOX, new Insets(0, 10, 0, 0));
-        BorderPane.setMargin(BOTTOM_BOX, new Insets(5, 10, 5, 10));
+        BorderPane.setMargin(BOTTOM_BOX, new Insets(5, 0, 5, 10));
     }
     
     private void addEntryHandler() {
