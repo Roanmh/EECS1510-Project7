@@ -71,7 +71,7 @@ public class EntryReport {
     }
     
     public boolean isAnyMatches() {
-        return NAME_MATCHES_FLAG && WHOLE_MATCHES_FLAG;
+        return NAME_MATCHES_FLAG || WHOLE_MATCHES_FLAG;
     }
     
     public boolean isOK() {
