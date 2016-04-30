@@ -618,7 +618,9 @@ public class InventoryManagementGUI extends Application {
                     }
                     isRetry = false;
                 } else {
-                    if (lastReport.isAnyMatches()) {
+                    if (lastReport.isERROR_FLAG()) {
+                        isRetry = true;
+                    } else if (lastReport.isAnyMatches()) {
                         confirmResult = duplicateDialogHandler(lastReport.
                                 getNAME_MATCHES(),
                                 lastReport.getWHOLE_MATCHES());
