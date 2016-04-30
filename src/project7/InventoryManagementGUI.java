@@ -25,6 +25,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.*;
 import javafx.scene.control.ButtonBar.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -42,6 +44,10 @@ public class InventoryManagementGUI extends Application {
     private static Stage primaryStage = null;
     private static EntryReport lastReport = new EntryReport();
     
+    /**
+     * 
+     * @param primaryStage 
+     */
     @Override
     public void start(Stage primaryStage) {
         InventoryManagementGUI.primaryStage = primaryStage;
@@ -52,7 +58,6 @@ public class InventoryManagementGUI extends Application {
         addMenus();
         updateTable();
         setupSidePanel();
-        setupBottomFilter();
         setupMargins();
         
         //table.setPadding(new Insets(10));
@@ -65,10 +70,15 @@ public class InventoryManagementGUI extends Application {
         
         Scene scene = new Scene(ROOT, 800, 400);
         
-        primaryStage.setTitle("Inventory Management");
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        InventoryManagementGUI.primaryStage.setTitle("Inventory Management");
+        InventoryManagementGUI.primaryStage.setScene(scene);
+        InventoryManagementGUI.primaryStage.show();
+        setupBottomFilter();
     }
+    
+    /**
+     * 
+     */
     private void addMenus() {
         Menu menuFile = new Menu("File");
         {
@@ -133,6 +143,10 @@ public class InventoryManagementGUI extends Application {
         
         MENU_BAR.getMenus().addAll(menuFile, menuEdit, menuHelp);
     }
+    
+    /**
+     * 
+     */
     private void updateTable() {
         TABLE.getColumns().clear();
         TableColumn nameCol = new TableColumn("Name");
@@ -144,19 +158,24 @@ public class InventoryManagementGUI extends Application {
         
         TABLE.setItems(InventoryManagement.filteredEntries(filterText));
         TABLE.getColumns().addAll(nameCol, numberCol, notesCol);
+        TABLE.setPlaceholder(new Label("No entries found"));
     }
+    
+    /**
+     * 
+     */
     private void setupSidePanel() {
-        Button addEntry = new Button("Add Entry");
+        Button addEntry = new Button();
         addEntry.setOnAction((ActionEvent e) -> {
             addEntryHandler();
         });
 
-        Button editEntry = new Button("Edit Entry");
+        Button editEntry = new Button();
         editEntry.setOnAction((ActionEvent e) -> {
             editEntryHandler();
         });
 
-        Button deleteEntry = new Button("Delete Entry");
+        Button deleteEntry = new Button();
         deleteEntry.setOnAction((ActionEvent e) -> {
             deleteEntryHandler();
         });
@@ -165,40 +184,62 @@ public class InventoryManagementGUI extends Application {
         editEntry.setMaxWidth(Double.MAX_VALUE);
         deleteEntry.setMaxWidth(Double.MAX_VALUE);
         
+        Image imgAdd = new Image("file:img/green_plus.png");
+        addEntry.setGraphic(new ImageView(imgAdd));
+        Image imgEdit = new Image("file:img/pencil.png");
+        editEntry.setGraphic(new ImageView(imgEdit));
+        Image imgDel = new Image("file:img/red_x.png");
+        deleteEntry.setGraphic(new ImageView(imgDel));
+        
         VBox vBoxButtons = new VBox();
         vBoxButtons.setSpacing(5);
         vBoxButtons.getChildren().addAll(addEntry, editEntry, deleteEntry);
         
         RIGHT_BOX.getChildren().add(vBoxButtons);
     }
+    
+    /**
+     * 
+     */
     private void setupBottomFilter() {
-        TextField t = new TextField();
-        t.setPromptText("Filter");
-        t.setPrefWidth(500); //TODO: CHANGE TO WIDTH OF TABLE
-        t.setOnKeyReleased((KeyEvent e) -> {
-            filterHandler(t.getText());
+        TextField filter = new TextField();
+        filter.setPromptText("Filter");
+        filter.prefWidthProperty().bind(TABLE.widthProperty());
+        filter.setOnKeyReleased((KeyEvent e) -> {
+            filterHandler(filter.getText());
         });
-        ComboBox c = new ComboBox();
-        c.getItems().addAll(
+        
+        ComboBox criteria = new ComboBox();
+        criteria.getItems().addAll(
                 "Name",
                 "Notes"
         );
-        c.setValue("Name");
-        c.valueProperty().addListener(new ChangeListener<String>() {
+        criteria.setValue("Name");
+        criteria.setMaxWidth(Double.MAX_VALUE);
+        criteria.valueProperty().addListener(new ChangeListener<String>() {
             @Override 
-            public void changed(ObservableValue ov, String t, String t1) {                
-                filterChoiceHandler(t1);
+            public void changed(ObservableValue ov, String oldStr, String newStr) {                
+                filterChoiceHandler(newStr);
             }
         });
-        BOTTOM_BOX.getChildren().addAll(t, c);
+        
+        BOTTOM_BOX.setSpacing(10);
+        BOTTOM_BOX.getChildren().addAll(filter, criteria);
     }
+    
+    /**
+     * 
+     */
     private void setupMargins() {
         BorderPane.setMargin(TABLE, new Insets(0, 10, 10, 0));
         BorderPane.setMargin(MENU_BAR, new Insets(0, 0, 10, 0));
         BorderPane.setMargin(RIGHT_BOX, new Insets(0, 10, 0, 0));
-        BorderPane.setMargin(BOTTOM_BOX, new Insets(5, 10, 5, 10));
+        BorderPane.setMargin(BOTTOM_BOX, new Insets(5, 0, 5, 10));
     }
     
+    /**
+     * 
+     */
     private void addEntryHandler() {
         EntryReport report;
         
@@ -269,6 +310,10 @@ public class InventoryManagementGUI extends Application {
         lastReport = new EntryReport();
         updateTable();
     }
+    
+    /**
+     * 
+     */
     private void editEntryHandler() {
         Entry entry;
         
@@ -317,6 +362,10 @@ public class InventoryManagementGUI extends Application {
         updateTable();
 
     }
+    
+    /**
+     * 
+     */
     private void deleteEntryHandler() {
         System.out.println("deleteEntry");
         
@@ -324,11 +373,21 @@ public class InventoryManagementGUI extends Application {
                                         getSelectedItem());
         updateTable();
     }
+    
+    /**
+     * 
+     * @param s 
+     */
     private void filterHandler(String s) {
         System.out.println("FILTER!");
         filterText = s;
         updateTable();
     }
+    
+    /**
+     * 
+     * @param type 
+     */
     private void filterChoiceHandler(String type) {
         System.out.println("CHANGED");
         
@@ -336,6 +395,10 @@ public class InventoryManagementGUI extends Application {
         updateTable();
         
     }
+    
+    /**
+     * 
+     */
     private void newListHandler() {
         System.out.println("newList");
                 
@@ -356,6 +419,10 @@ public class InventoryManagementGUI extends Application {
             updateTable();    
         }      
     }
+    
+    /**
+     * 
+     */
     private void openListHandler() {
         System.out.println("openList");
         Stage stage = new Stage();
@@ -372,6 +439,10 @@ public class InventoryManagementGUI extends Application {
         updateTable();
         primaryStage.setTitle("Invetory Management - " + file.getName());
     }
+    
+    /**
+     * 
+     */
     private void saveListHandler() {
         System.out.println("saveList");
         Stage stage = new Stage();
@@ -387,9 +458,26 @@ public class InventoryManagementGUI extends Application {
         InventoryManagement.saveInventory(file.getPath());
         primaryStage.setTitle("Invetory Management - " + file.getName());
     }
+    
+    /**
+     * 
+     */
     private void aboutHandler() {
         System.out.println("About");
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Project 7");
+        alert.setHeaderText("Inventory Management");
+        alert.setContentText("Created by Caleb Davenport "
+                + "and Roan Martin-Hayden\n"
+                + "Spring 2016");
+
+        alert.showAndWait();
     }
+    
+    /**
+     * 
+     * @param args 
+     */
     public static void main(String[] args) {
         launch(args);
     }
