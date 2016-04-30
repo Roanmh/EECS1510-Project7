@@ -20,6 +20,8 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -484,14 +486,53 @@ public class InventoryManagementGUI extends Application {
         launch(args);
     }
     
-    private static Optional<ButtonType> duplicateDialogHandler() {
-        Dialog dialog = new Dialog();
+    private static Optional<ButtonType> duplicateDialogHandler(
+            ObservableList<Entry> nameMatches,
+            ObservableList<Entry> wholeMatches) {
+        
+        Dialog dialog;
+        BorderPane borderPane;
+        TableView<Entry> duplicatesTable;
+        ObservableList<Entry> combinedMatches;
+        
+        dialog = new Dialog();
         dialog.setTitle("Duplcates Found");
         dialog.setHeaderText("Duplicates Found");
+        
         ButtonType confirmButton = new ButtonType("Confirm", ButtonData.YES);
         ButtonType changeButton = new ButtonType("Change", ButtonData.BACK_PREVIOUS);
         ButtonType cancelButton = new ButtonType("Cancel", ButtonData.SMALL_GAP);
         dialog.getDialogPane().getButtonTypes().addAll(cancelButton, changeButton, confirmButton);
+        
+        duplicatesTable = new TableView<>();
+        duplicatesTable.getColumns().clear();
+
+        // TODO: Add Identifier of Type (Requires wrapper class or more info...
+//        TableColumn matchCol = new TableColumn("Match");
+//        matchCol.setCellValueFactory(new PropertyValueFactory<>("match"));
+        
+        TableColumn nameCol = new TableColumn("Name");
+        nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        
+        TableColumn numberCol = new TableColumn("Number");
+        numberCol.setCellValueFactory(new PropertyValueFactory<>("number"));
+        
+        TableColumn notesCol = new TableColumn("Notes");
+        notesCol.setCellValueFactory(new PropertyValueFactory<>("notes"));
+        
+        combinedMatches = FXCollections.observableArrayList();
+        combinedMatches.addAll(wholeMatches);
+        combinedMatches.addAll(nameMatches);
+        duplicatesTable.setItems(combinedMatches);
+        duplicatesTable.getColumns().addAll(nameCol, numberCol, notesCol);
+        duplicatesTable.setPlaceholder(new Label("No entries found"));
+        duplicatesTable.maxHeightProperty().set(120);
+        
+        borderPane = new BorderPane();
+        borderPane.setCenter(duplicatesTable);
+        
+        dialog.getDialogPane().setContent(borderPane);
+        
         return dialog.showAndWait();
     }
     
@@ -578,7 +619,9 @@ public class InventoryManagementGUI extends Application {
                     isRetry = false;
                 } else {
                     if (lastReport.isAnyMatches()) {
-                        confirmResult = duplicateDialogHandler();
+                        confirmResult = duplicateDialogHandler(lastReport.
+                                getNAME_MATCHES(),
+                                lastReport.getWHOLE_MATCHES());
                         if (null != confirmResult.get().getButtonData())
                             switch (confirmResult.get().getButtonData()) {
                             case YES:
