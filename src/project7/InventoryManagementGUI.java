@@ -242,7 +242,6 @@ public class InventoryManagementGUI extends Application {
     private void addEntryHandler() {
         EntryReport report;
         
-        System.out.println("addEntry");
         Dialog dialog = new Dialog();
         dialog.setTitle("Add Entry");
         dialog.setHeaderText("Add Entry");
@@ -290,7 +289,6 @@ public class InventoryManagementGUI extends Application {
             errText1.setText(lastReport.getNAME_ERROR_MSG());
             errText2.setText(lastReport.getNUMBER_ERROR_MSG());
             result = dialog.showAndWait();
-            System.out.println(result.get());
             if (result.get().getButtonData() == ButtonData.OK_DONE) {
                 lastReport = InventoryManagement.checkAddEntry(name.getText(),
                                                                number.getText(),
@@ -315,8 +313,6 @@ public class InventoryManagementGUI extends Application {
      */
     private void editEntryHandler() {
         Entry entry;
-        
-        System.out.println("editEntry");
         
         Dialog dialog = new Dialog();
         dialog.setTitle("Edit Entry");
@@ -353,7 +349,6 @@ public class InventoryManagementGUI extends Application {
         Platform.runLater(() -> name.requestFocus());
         
         Optional<ButtonType> result = dialog.showAndWait();
-        System.out.println(result.get());
         if (result.get().getButtonData() == ButtonData.OK_DONE) {
             InventoryManagement.editEntry(entry, name.getText(),
                                           number.getText(), notes.getText());
@@ -366,8 +361,6 @@ public class InventoryManagementGUI extends Application {
      * 
      */
     private void deleteEntryHandler() {
-        System.out.println("deleteEntry");
-        
         InventoryManagement.deleteEntry(TABLE.getSelectionModel().
                                         getSelectedItem());
         updateTable();
@@ -378,7 +371,6 @@ public class InventoryManagementGUI extends Application {
      * @param s 
      */
     private void filterHandler(String s) {
-        System.out.println("FILTER!");
         filterText = s;
         updateTable();
     }
@@ -388,8 +380,6 @@ public class InventoryManagementGUI extends Application {
      * @param type 
      */
     private void filterChoiceHandler(String type) {
-        System.out.println("CHANGED");
-        
         InventoryManagement.setFilterCriterion(type);
         updateTable();
         
@@ -398,9 +388,7 @@ public class InventoryManagementGUI extends Application {
     /**
      * 
      */
-    private void newListHandler() {
-        System.out.println("newList");
-                
+    private void newListHandler() {    
         Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
         
         confirmation.setTitle("New List Confirmation");
@@ -423,7 +411,6 @@ public class InventoryManagementGUI extends Application {
      * 
      */
     private void openListHandler() {
-        System.out.println("openList");
         Stage stage = new Stage();
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open an inventory list");
@@ -443,7 +430,6 @@ public class InventoryManagementGUI extends Application {
      * 
      */
     private void saveListHandler() {
-        System.out.println("saveList");
         Stage stage = new Stage();
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save an inventory list");
@@ -462,7 +448,6 @@ public class InventoryManagementGUI extends Application {
      * 
      */
     private void aboutHandler() {
-        System.out.println("About");
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Project 7");
         alert.setHeaderText("Inventory Management");
