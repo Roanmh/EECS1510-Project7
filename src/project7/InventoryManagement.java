@@ -64,9 +64,10 @@ public class InventoryManagement {
     public static EntryReport checkAddEntry(String name, String number,
                                        String notes) {
         Entry attemptedEntry;
-        ObservableList<String> errMessages;
         ObservableList<Entry> nameMatches;
         ObservableList<Entry> wholeMatches;
+        String nameErrorMessage;
+        String numberErrorMessage;
     
         // Find Name Matches
         nameMatches = FXCollections.observableArrayList();
@@ -86,17 +87,13 @@ public class InventoryManagement {
                 
         
         // Name based Error Message creation
-        errMessages = FXCollections.observableArrayList();
-        if (!"".equals(checkNameValidity(name))) {
-            errMessages.add(checkNameValidity(name));
-        }
-        if (!"".equals(checkNumberValidty(number))) {
-            errMessages.add(checkNumberValidty(number));
-        }
+        nameErrorMessage = checkNameValidity(name);
+        numberErrorMessage = checkNumberValidty(number);
 
         attemptedEntry = new Entry(name, number, notes);
         
-        return new EntryReport(attemptedEntry, nameMatches, wholeMatches, errMessages);
+        return new EntryReport(attemptedEntry, nameMatches, wholeMatches,
+                nameErrorMessage, numberErrorMessage);
     }
     
     /**
@@ -274,7 +271,7 @@ public class InventoryManagement {
         
         /// Tests, ordered by priority
         // Numerals Check
-        if (!number.matches("[0-9]+\\.[0-9]*|[0-9]*\\.[0-9]+")) {
+        if (!number.matches("[0-9]+(\\.[0-9]*)?")) {
             errMessage = "Not a number.";
         }
         

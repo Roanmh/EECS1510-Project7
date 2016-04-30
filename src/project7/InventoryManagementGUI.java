@@ -27,6 +27,8 @@ import javafx.scene.control.cell.*;
 import javafx.scene.control.ButtonBar.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -38,6 +40,7 @@ public class InventoryManagementGUI extends Application {
     private static final BorderPane ROOT = new BorderPane();
     private static String filterText = "";
     private static Stage primaryStage = null;
+    private static EntryReport lastReport = new EntryReport();
     
     @Override
     public void start(Stage primaryStage) {
@@ -93,7 +96,8 @@ public class InventoryManagementGUI extends Application {
                 System.exit(0);
             });
 
-            menuFile.getItems().addAll(newList, openList, saveList, new SeparatorMenuItem(), exit);
+            menuFile.getItems().addAll(newList, openList, saveList,
+                                       new SeparatorMenuItem(), exit);
         }
         
         Menu menuEdit = new Menu("Edit");
@@ -196,12 +200,15 @@ public class InventoryManagementGUI extends Application {
     }
     
     private void addEntryHandler() {
+        EntryReport report;
+        
         System.out.println("addEntry");
         Dialog dialog = new Dialog();
         dialog.setTitle("Add Entry");
         dialog.setHeaderText("Add Entry");
         ButtonType loginButtonType = new ButtonType("Add", ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType,
+                                                       ButtonType.CANCEL);
 
         GridPane grid = new GridPane();
         grid.setHgap(10);
@@ -221,16 +228,45 @@ public class InventoryManagementGUI extends Application {
         grid.add(number, 1, 1);
         grid.add(new Label("Notes:"), 0, 2);
         grid.add(notes, 1, 2);
+        
+        // Error Notifications
+        Label errText1 = new Label("");
+        errText1.setTextFill(Color.web("#F00"));
+        Label errText2 = new Label("");
+        errText2.setTextFill(Color.web("#F00"));
+        Label errText3 = new Label("");
+        errText3.setTextFill(Color.web("#F00"));
+        
+        grid.add(errText1, 2, 0);
+        grid.add(errText2, 2, 1);
+        grid.add(errText3, 2, 2);
 
         dialog.getDialogPane().setContent(grid);
         Platform.runLater(() -> name.requestFocus());
         
-        Optional<ButtonType> result = dialog.showAndWait();
-        System.out.println(result.get());
-        if (result.get().getButtonData() == ButtonData.OK_DONE) {
-            InventoryManagement.addEntry(name.getText(), number.getText(),
-                                         notes.getText());
+        Optional<ButtonType> result;
+        boolean isRetry = true;
+        while (isRetry) {
+            errText1.setText(lastReport.getNAME_ERROR_MSSG());
+            errText2.setText(lastReport.getNUMBER_ERROR_MSSG());
+            result = dialog.showAndWait();
+            System.out.println(result.get());
+            if (result.get().getButtonData() == ButtonData.OK_DONE) {
+                lastReport = InventoryManagement.checkAddEntry(name.getText(),
+                                                               number.getText(),
+                                                               number.
+                                                               getText());
+                if (lastReport.isOK()) {
+                    InventoryManagement.addEntry(name.getText(), number.getText(),
+                                                 notes.getText());
+                    
+                    isRetry = false;
+                }
+            } else {
+                isRetry = false;
+            }
         }
+        lastReport = new EntryReport();
         updateTable();
     }
     private void editEntryHandler() {
@@ -242,7 +278,8 @@ public class InventoryManagementGUI extends Application {
         dialog.setTitle("Edit Entry");
         dialog.setHeaderText("Edit Entry");
         ButtonType loginButtonType = new ButtonType("Edit", ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType,
+                                                       ButtonType.CANCEL);
 
         GridPane grid = new GridPane();
         grid.setHgap(10);
@@ -274,8 +311,8 @@ public class InventoryManagementGUI extends Application {
         Optional<ButtonType> result = dialog.showAndWait();
         System.out.println(result.get());
         if (result.get().getButtonData() == ButtonData.OK_DONE) {
-            InventoryManagement.editEntry(entry, name.getText(), number.getText(),
-                                         notes.getText());
+            InventoryManagement.editEntry(entry, name.getText(),
+                                          number.getText(), notes.getText());
         }
         updateTable();
 
@@ -309,7 +346,8 @@ public class InventoryManagementGUI extends Application {
         confirmation.setContentText("Current list will be " +
                                     "permanently deleted.");
         
-        ButtonType confirmButtonType = new ButtonType("Proceed", ButtonData.YES);
+        ButtonType confirmButtonType = new ButtonType("Proceed",
+                                                      ButtonData.YES);
         confirmation.getButtonTypes().set(0, confirmButtonType);
         
         Optional<ButtonType> result = confirmation.showAndWait();
@@ -354,5 +392,14 @@ public class InventoryManagementGUI extends Application {
     }
     public static void main(String[] args) {
         launch(args);
+    }
+    
+    private static void duplicateDialogHandler() {
+        Dialog dialog = new Dialog();
+        dialog.setTitle("Add Entry");
+        dialog.setHeaderText("Add Entry");
+        ButtonType loginButtonType = new ButtonType("Add", ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+
     }
 }
