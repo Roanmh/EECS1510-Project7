@@ -13,7 +13,6 @@
 
 package project7;
 
-import com.jfoenix.controls.JFXSpinner;
 import java.io.File;
 import java.util.Optional;
 import javafx.application.Application;
@@ -458,6 +457,7 @@ public class InventoryManagementGUI extends Application {
         alert.setContentText("Created by Caleb Davenport "
                 + "and Roan Martin-Hayden\n\n"
                 + "Spring 2016");
+        alert.setGraphic(new ImageView(new Image("file:img/about.png", 100, 100, true, true)));
 
         alert.showAndWait();
     }
