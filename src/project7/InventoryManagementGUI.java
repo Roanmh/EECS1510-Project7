@@ -33,7 +33,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javax.xml.ws.Response;
@@ -155,11 +154,14 @@ public class InventoryManagementGUI extends Application {
         TABLE.getColumns().clear();
         TableColumn nameCol = new TableColumn("Name");
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-        TableColumn<Entry, String> numberCol = new TableColumn("Number");
+        TableColumn<Entry, String> numberCol = new TableColumn("#");
         numberCol.setCellValueFactory(new PropertyValueFactory<>("number"));
         TableColumn notesCol = new TableColumn("Notes");
         notesCol.setCellValueFactory(new PropertyValueFactory<>("notes"));
         
+        nameCol.prefWidthProperty().bind(TABLE.widthProperty().multiply(0.1));
+        numberCol.prefWidthProperty().bind(TABLE.widthProperty().multiply(0.05));
+        notesCol.prefWidthProperty().bind(TABLE.widthProperty().multiply(0.85));
         TABLE.setItems(InventoryManagement.filteredEntries(filterText));
         TABLE.getColumns().addAll(nameCol, numberCol, notesCol);
         TABLE.setPlaceholder(new Label("No entries found"));
@@ -169,17 +171,17 @@ public class InventoryManagementGUI extends Application {
      * 
      */
     private void setupSidePanel() {
-        Button addEntry = new Button();
+        Button addEntry = new Button("Add");
         addEntry.setOnAction((ActionEvent e) -> {
             entryDialogHandler(false);
         });
 
-        Button editEntry = new Button();
+        Button editEntry = new Button("Edit");
         editEntry.setOnAction((ActionEvent e) -> {
             entryDialogHandler(true);
         });
 
-        Button deleteEntry = new Button();
+        Button deleteEntry = new Button("Delete");
         deleteEntry.setOnAction((ActionEvent e) -> {
             deleteEntryHandler();
         });
@@ -188,18 +190,15 @@ public class InventoryManagementGUI extends Application {
         editEntry.setMaxWidth(Double.MAX_VALUE);
         deleteEntry.setMaxWidth(Double.MAX_VALUE);
         
-        Image imgAdd = new Image("file:img/green_plus.png");
+        Image imgAdd = new Image("file:img/green_plus.png", 16, 16, true, false);
         addEntry.setGraphic(new ImageView(imgAdd));
-        Image imgEdit = new Image("file:img/pencil.png");
+        Image imgEdit = new Image("file:img/pencil.png", 16, 16, true, true);
         editEntry.setGraphic(new ImageView(imgEdit));
-        Image imgDel = new Image("file:img/red_x.png");
+        Image imgDel = new Image("file:img/red_x.png", 16, 16, true, false);
         deleteEntry.setGraphic(new ImageView(imgDel));
         
-        VBox vBoxButtons = new VBox();
-        vBoxButtons.setSpacing(5);
-        vBoxButtons.getChildren().addAll(addEntry, editEntry, deleteEntry);
-        
-        RIGHT_BOX.getChildren().add(vBoxButtons);
+        RIGHT_BOX.setSpacing(5);
+        RIGHT_BOX.getChildren().addAll(addEntry, editEntry, deleteEntry);
     }
     
     /**
@@ -238,7 +237,7 @@ public class InventoryManagementGUI extends Application {
         BorderPane.setMargin(TABLE, new Insets(0, 10, 10, 0));
         BorderPane.setMargin(MENU_BAR, new Insets(0, 0, 10, 0));
         BorderPane.setMargin(RIGHT_BOX, new Insets(0, 10, 0, 0));
-        BorderPane.setMargin(BOTTOM_BOX, new Insets(5, 0, 5, 10));
+        BorderPane.setMargin(BOTTOM_BOX, new Insets(5, 10, 5, 10));
     }
     
     /**
@@ -247,7 +246,6 @@ public class InventoryManagementGUI extends Application {
     private void addEntryHandler() {
         EntryReport report;
         
-        System.out.println("addEntry");
         Dialog dialog = new Dialog();
         dialog.setTitle("Add Entry");
         dialog.setHeaderText("Add Entry");
@@ -292,10 +290,9 @@ public class InventoryManagementGUI extends Application {
         Optional<ButtonType> result;
         boolean isRetry = true;
         while (isRetry) {
-            errText1.setText(lastReport.getNAME_ERROR_MSSG());
-            errText2.setText(lastReport.getNUMBER_ERROR_MSSG());
+            errText1.setText(lastReport.getNAME_ERROR_MSG());
+            errText2.setText(lastReport.getNUMBER_ERROR_MSG());
             result = dialog.showAndWait();
-            System.out.println(result.get());
             if (result.get().getButtonData() == ButtonData.OK_DONE) {
                 lastReport = InventoryManagement.checkAddEntry(name.getText(),
                                                                number.getText(),
@@ -303,7 +300,7 @@ public class InventoryManagementGUI extends Application {
                                                                getText());
                 if (lastReport.isOK()) {
                     InventoryManagement.addEntry(name.getText(), number.getText(),
-                                                 notes.getText());
+                            notes.getText());
                     
                     isRetry = false;
                 }
@@ -320,8 +317,6 @@ public class InventoryManagementGUI extends Application {
      */
     private void editEntryHandler() {
         Entry entry;
-        
-        System.out.println("editEntry");
         
         Dialog dialog = new Dialog();
         dialog.setTitle("Edit Entry");
@@ -358,7 +353,6 @@ public class InventoryManagementGUI extends Application {
         Platform.runLater(() -> name.requestFocus());
         
         Optional<ButtonType> result = dialog.showAndWait();
-        System.out.println(result.get());
         if (result.get().getButtonData() == ButtonData.OK_DONE) {
             InventoryManagement.editEntry(entry, name.getText(),
                                           number.getText(), notes.getText());
@@ -371,8 +365,6 @@ public class InventoryManagementGUI extends Application {
      * 
      */
     private void deleteEntryHandler() {
-        System.out.println("deleteEntry");
-        
         InventoryManagement.deleteEntry(TABLE.getSelectionModel().
                                         getSelectedItem());
         updateTable();
@@ -383,7 +375,6 @@ public class InventoryManagementGUI extends Application {
      * @param s 
      */
     private void filterHandler(String s) {
-        System.out.println("FILTER!");
         filterText = s;
         updateTable();
     }
@@ -393,8 +384,6 @@ public class InventoryManagementGUI extends Application {
      * @param type 
      */
     private void filterChoiceHandler(String type) {
-        System.out.println("CHANGED");
-        
         InventoryManagement.setFilterCriterion(type);
         updateTable();
         
@@ -403,9 +392,7 @@ public class InventoryManagementGUI extends Application {
     /**
      * 
      */
-    private void newListHandler() {
-        System.out.println("newList");
-                
+    private void newListHandler() {    
         Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
         
         confirmation.setTitle("New List Confirmation");
@@ -428,7 +415,6 @@ public class InventoryManagementGUI extends Application {
      * 
      */
     private void openListHandler() {
-        System.out.println("openList");
         Stage stage = new Stage();
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open an inventory list");
@@ -441,14 +427,13 @@ public class InventoryManagementGUI extends Application {
         if (file == null) return;
         InventoryManagement.loadInventory(file.getPath());
         updateTable();
-        primaryStage.setTitle("Invetory Management - " + file.getName());
+        primaryStage.setTitle("Inventory Management - " + file.getName());
     }
     
     /**
      * 
      */
     private void saveListHandler() {
-        System.out.println("saveList");
         Stage stage = new Stage();
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save an inventory list");
@@ -460,19 +445,18 @@ public class InventoryManagementGUI extends Application {
         File file = fileChooser.showSaveDialog(stage);
         if (file == null) return;
         InventoryManagement.saveInventory(file.getPath());
-        primaryStage.setTitle("Invetory Management - " + file.getName());
+        primaryStage.setTitle("Inventory Management - " + file.getName());
     }
     
     /**
      * 
      */
     private void aboutHandler() {
-        System.out.println("About");
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Project 7");
         alert.setHeaderText("Inventory Management");
         alert.setContentText("Created by Caleb Davenport "
-                + "and Roan Martin-Hayden\n"
+                + "and Roan Martin-Hayden\n\n"
                 + "Spring 2016");
 
         alert.showAndWait();
@@ -597,8 +581,8 @@ public class InventoryManagementGUI extends Application {
         Optional<ButtonType> confirmResult;
         boolean isRetry = true;
         while (isRetry) {
-            errText1.setText(lastReport.getNAME_ERROR_MSSG());
-            errText2.setText(lastReport.getNUMBER_ERROR_MSSG());
+            errText1.setText(lastReport.getNAME_ERROR_MSG());
+            errText2.setText(lastReport.getNUMBER_ERROR_MSG());
             entryResult = dialog.showAndWait();
             System.out.println(entryResult.get());
             if (entryResult.get().getButtonData() == ButtonData.OK_DONE) {
