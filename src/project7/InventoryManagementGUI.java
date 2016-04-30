@@ -150,14 +150,22 @@ public class InventoryManagementGUI extends Application {
         TABLE.getColumns().clear();
         TableColumn nameCol = new TableColumn("Name");
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-        TableColumn<Entry, String> numberCol = new TableColumn("#");
+        TableColumn numberCol = new TableColumn("#");
         numberCol.setCellValueFactory(new PropertyValueFactory<>("number"));
         TableColumn notesCol = new TableColumn("Notes");
         notesCol.setCellValueFactory(new PropertyValueFactory<>("notes"));
-        
-        nameCol.prefWidthProperty().bind(TABLE.widthProperty().multiply(0.1));
-        numberCol.prefWidthProperty().bind(TABLE.widthProperty().multiply(0.05));
-        notesCol.prefWidthProperty().bind(TABLE.widthProperty().multiply(0.85));
+        {
+            nameCol.prefWidthProperty().bind(TABLE.widthProperty()
+                    .multiply(0.1));
+            nameCol.minWidthProperty().set(80);
+
+            numberCol.prefWidthProperty().bind(nameCol.widthProperty()
+                    .multiply(0.5));
+
+            notesCol.prefWidthProperty().bind(TABLE.widthProperty()
+                    .subtract(nameCol.widthProperty().multiply(1.5))
+                    .subtract(2));
+        }
         TABLE.setItems(InventoryManagement.filteredEntries(filterText));
         TABLE.getColumns().addAll(nameCol, numberCol, notesCol);
         TABLE.setPlaceholder(new Label("No entries found"));
@@ -182,9 +190,9 @@ public class InventoryManagementGUI extends Application {
             deleteEntryHandler();
         });
         
-        addEntry.setMaxWidth(Double.MAX_VALUE);
-        editEntry.setMaxWidth(Double.MAX_VALUE);
-        deleteEntry.setMaxWidth(Double.MAX_VALUE);
+        addEntry.maxWidthProperty().set(Double.MAX_VALUE);
+        editEntry.maxWidthProperty().set(Double.MAX_VALUE);
+        deleteEntry.maxWidthProperty().set(Double.MAX_VALUE);
         
         Image imgAdd = new Image("file:img/green_plus.png", 16, 16, true, false);
         addEntry.setGraphic(new ImageView(imgAdd));
@@ -222,7 +230,7 @@ public class InventoryManagementGUI extends Application {
             }
         });
         
-        BOTTOM_BOX.setSpacing(10);
+        BOTTOM_BOX.setSpacing(5);
         BOTTOM_BOX.getChildren().addAll(filter, criteria);
     }
     
