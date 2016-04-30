@@ -39,6 +39,10 @@ public class InventoryManagementGUI extends Application {
     private static String filterText = "";
     private static Stage primaryStage = null;
     
+    /**
+     * 
+     * @param primaryStage 
+     */
     @Override
     public void start(Stage primaryStage) {
         InventoryManagementGUI.primaryStage = primaryStage;
@@ -66,6 +70,10 @@ public class InventoryManagementGUI extends Application {
         InventoryManagementGUI.primaryStage.show();
         setupBottomFilter();
     }
+    
+    /**
+     * 
+     */
     private void addMenus() {
         Menu menuFile = new Menu("File");
         {
@@ -129,6 +137,10 @@ public class InventoryManagementGUI extends Application {
         
         MENU_BAR.getMenus().addAll(menuFile, menuEdit, menuHelp);
     }
+    
+    /**
+     * 
+     */
     private void updateTable() {
         TABLE.getColumns().clear();
         TableColumn nameCol = new TableColumn("Name");
@@ -142,6 +154,10 @@ public class InventoryManagementGUI extends Application {
         TABLE.getColumns().addAll(nameCol, numberCol, notesCol);
         TABLE.setPlaceholder(new Label("No entries found"));
     }
+    
+    /**
+     * 
+     */
     private void setupSidePanel() {
         Button addEntry = new Button("Add Entry");
         addEntry.setOnAction((ActionEvent e) -> {
@@ -168,6 +184,10 @@ public class InventoryManagementGUI extends Application {
         
         RIGHT_BOX.getChildren().add(vBoxButtons);
     }
+    
+    /**
+     * 
+     */
     private void setupBottomFilter() {
         TextField filter = new TextField();
         filter.setPromptText("Filter");
@@ -193,6 +213,10 @@ public class InventoryManagementGUI extends Application {
         BOTTOM_BOX.setSpacing(10);
         BOTTOM_BOX.getChildren().addAll(filter, criteria);
     }
+    
+    /**
+     * 
+     */
     private void setupMargins() {
         BorderPane.setMargin(TABLE, new Insets(0, 10, 10, 0));
         BorderPane.setMargin(MENU_BAR, new Insets(0, 0, 10, 0));
@@ -200,6 +224,9 @@ public class InventoryManagementGUI extends Application {
         BorderPane.setMargin(BOTTOM_BOX, new Insets(5, 0, 5, 10));
     }
     
+    /**
+     * 
+     */
     private void addEntryHandler() {
         System.out.println("addEntry");
         Dialog dialog = new Dialog();
@@ -238,6 +265,10 @@ public class InventoryManagementGUI extends Application {
         }
         updateTable();
     }
+    
+    /**
+     * 
+     */
     private void editEntryHandler() {
         Entry entry;
         
@@ -285,6 +316,10 @@ public class InventoryManagementGUI extends Application {
         updateTable();
 
     }
+    
+    /**
+     * 
+     */
     private void deleteEntryHandler() {
         System.out.println("deleteEntry");
         
@@ -292,11 +327,21 @@ public class InventoryManagementGUI extends Application {
                                         getSelectedItem());
         updateTable();
     }
+    
+    /**
+     * 
+     * @param s 
+     */
     private void filterHandler(String s) {
         System.out.println("FILTER!");
         filterText = s;
         updateTable();
     }
+    
+    /**
+     * 
+     * @param type 
+     */
     private void filterChoiceHandler(String type) {
         System.out.println("CHANGED");
         
@@ -304,6 +349,10 @@ public class InventoryManagementGUI extends Application {
         updateTable();
         
     }
+    
+    /**
+     * 
+     */
     private void newListHandler() {
         System.out.println("newList");
                 
@@ -323,6 +372,10 @@ public class InventoryManagementGUI extends Application {
             updateTable();    
         }      
     }
+    
+    /**
+     * 
+     */
     private void openListHandler() {
         System.out.println("openList");
         Stage stage = new Stage();
@@ -339,6 +392,10 @@ public class InventoryManagementGUI extends Application {
         updateTable();
         primaryStage.setTitle("Invetory Management - " + file.getName());
     }
+    
+    /**
+     * 
+     */
     private void saveListHandler() {
         System.out.println("saveList");
         Stage stage = new Stage();
@@ -354,9 +411,26 @@ public class InventoryManagementGUI extends Application {
         InventoryManagement.saveInventory(file.getPath());
         primaryStage.setTitle("Invetory Management - " + file.getName());
     }
+    
+    /**
+     * 
+     */
     private void aboutHandler() {
         System.out.println("About");
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Project 7");
+        alert.setHeaderText("Inventory Management");
+        alert.setContentText("Created by Caleb Davenport "
+                + "and Roan Martin-Hayden\n"
+                + "Spring 2016");
+
+        alert.showAndWait();
     }
+    
+    /**
+     * 
+     * @param args 
+     */
     public static void main(String[] args) {
         launch(args);
     }
