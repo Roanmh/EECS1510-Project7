@@ -186,18 +186,15 @@ public class InventoryManagementGUI extends Application {
         editEntry.setMaxWidth(Double.MAX_VALUE);
         deleteEntry.setMaxWidth(Double.MAX_VALUE);
         
-        Image imgAdd = new Image("file:img/green_plus.png", 16, 16, false, false);
+        Image imgAdd = new Image("file:img/green_plus.png", 16, 16, true, false);
         addEntry.setGraphic(new ImageView(imgAdd));
-        Image imgEdit = new Image("file:img/pencil.png", 16, 16, false, false);
+        Image imgEdit = new Image("file:img/pencil.png", 16, 16, true, true);
         editEntry.setGraphic(new ImageView(imgEdit));
-        Image imgDel = new Image("file:img/red_x.png", 16, 16, false, false);
+        Image imgDel = new Image("file:img/red_x.png", 16, 16, true, false);
         deleteEntry.setGraphic(new ImageView(imgDel));
         
-        VBox vBoxButtons = new VBox();
-        vBoxButtons.setSpacing(5);
-        vBoxButtons.getChildren().addAll(addEntry, editEntry, deleteEntry);
-        
-        RIGHT_BOX.getChildren().add(vBoxButtons);
+        RIGHT_BOX.setSpacing(5);
+        RIGHT_BOX.getChildren().addAll(addEntry, editEntry, deleteEntry);
     }
     
     /**
