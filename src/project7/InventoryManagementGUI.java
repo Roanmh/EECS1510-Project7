@@ -30,7 +30,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -151,11 +150,14 @@ public class InventoryManagementGUI extends Application {
         TABLE.getColumns().clear();
         TableColumn nameCol = new TableColumn("Name");
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-        TableColumn<Entry, String> numberCol = new TableColumn("Number");
+        TableColumn<Entry, String> numberCol = new TableColumn("#");
         numberCol.setCellValueFactory(new PropertyValueFactory<>("number"));
         TableColumn notesCol = new TableColumn("Notes");
         notesCol.setCellValueFactory(new PropertyValueFactory<>("notes"));
         
+        nameCol.prefWidthProperty().bind(TABLE.widthProperty().multiply(0.1));
+        numberCol.prefWidthProperty().bind(TABLE.widthProperty().multiply(0.05));
+        notesCol.prefWidthProperty().bind(TABLE.widthProperty().multiply(0.85));
         TABLE.setItems(InventoryManagement.filteredEntries(filterText));
         TABLE.getColumns().addAll(nameCol, numberCol, notesCol);
         TABLE.setPlaceholder(new Label("No entries found"));
@@ -165,17 +167,17 @@ public class InventoryManagementGUI extends Application {
      * 
      */
     private void setupSidePanel() {
-        Button addEntry = new Button();
+        Button addEntry = new Button("Add");
         addEntry.setOnAction((ActionEvent e) -> {
             addEntryHandler();
         });
 
-        Button editEntry = new Button();
+        Button editEntry = new Button("Edit");
         editEntry.setOnAction((ActionEvent e) -> {
             editEntryHandler();
         });
 
-        Button deleteEntry = new Button();
+        Button deleteEntry = new Button("Delete");
         deleteEntry.setOnAction((ActionEvent e) -> {
             deleteEntryHandler();
         });
@@ -184,11 +186,11 @@ public class InventoryManagementGUI extends Application {
         editEntry.setMaxWidth(Double.MAX_VALUE);
         deleteEntry.setMaxWidth(Double.MAX_VALUE);
         
-        Image imgAdd = new Image("file:img/green_plus.png");
+        Image imgAdd = new Image("file:img/green_plus.png", 16, 16, false, false);
         addEntry.setGraphic(new ImageView(imgAdd));
-        Image imgEdit = new Image("file:img/pencil.png");
+        Image imgEdit = new Image("file:img/pencil.png", 16, 16, false, false);
         editEntry.setGraphic(new ImageView(imgEdit));
-        Image imgDel = new Image("file:img/red_x.png");
+        Image imgDel = new Image("file:img/red_x.png", 16, 16, false, false);
         deleteEntry.setGraphic(new ImageView(imgDel));
         
         VBox vBoxButtons = new VBox();
@@ -234,7 +236,7 @@ public class InventoryManagementGUI extends Application {
         BorderPane.setMargin(TABLE, new Insets(0, 10, 10, 0));
         BorderPane.setMargin(MENU_BAR, new Insets(0, 0, 10, 0));
         BorderPane.setMargin(RIGHT_BOX, new Insets(0, 10, 0, 0));
-        BorderPane.setMargin(BOTTOM_BOX, new Insets(5, 0, 5, 10));
+        BorderPane.setMargin(BOTTOM_BOX, new Insets(5, 10, 5, 10));
     }
     
     /**
@@ -288,8 +290,8 @@ public class InventoryManagementGUI extends Application {
         Optional<ButtonType> result;
         boolean isRetry = true;
         while (isRetry) {
-            errText1.setText(lastReport.getNAME_ERROR_MSSG());
-            errText2.setText(lastReport.getNUMBER_ERROR_MSSG());
+            errText1.setText(lastReport.getNAME_ERROR_MSG());
+            errText2.setText(lastReport.getNUMBER_ERROR_MSG());
             result = dialog.showAndWait();
             System.out.println(result.get());
             if (result.get().getButtonData() == ButtonData.OK_DONE) {
@@ -299,7 +301,7 @@ public class InventoryManagementGUI extends Application {
                                                                getText());
                 if (lastReport.isOK()) {
                     InventoryManagement.addEntry(name.getText(), number.getText(),
-                                                 notes.getText());
+                            notes.getText());
                     
                     isRetry = false;
                 }
@@ -437,7 +439,7 @@ public class InventoryManagementGUI extends Application {
         if (file == null) return;
         InventoryManagement.loadInventory(file.getPath());
         updateTable();
-        primaryStage.setTitle("Invetory Management - " + file.getName());
+        primaryStage.setTitle("Inventory Management - " + file.getName());
     }
     
     /**
@@ -456,7 +458,7 @@ public class InventoryManagementGUI extends Application {
         File file = fileChooser.showSaveDialog(stage);
         if (file == null) return;
         InventoryManagement.saveInventory(file.getPath());
-        primaryStage.setTitle("Invetory Management - " + file.getName());
+        primaryStage.setTitle("Inventory Management - " + file.getName());
     }
     
     /**
@@ -468,7 +470,7 @@ public class InventoryManagementGUI extends Application {
         alert.setTitle("Project 7");
         alert.setHeaderText("Inventory Management");
         alert.setContentText("Created by Caleb Davenport "
-                + "and Roan Martin-Hayden\n"
+                + "and Roan Martin-Hayden\n\n"
                 + "Spring 2016");
 
         alert.showAndWait();

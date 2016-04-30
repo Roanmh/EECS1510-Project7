@@ -252,7 +252,7 @@ public class InventoryManagement {
         if (name.length() == 0) {
             errMessage = "No name entered.";
         } else if (name.length() > 8) {
-            errMessage = "Name is to long.";
+            errMessage = "Name is too long.";
         }
         
         return errMessage;

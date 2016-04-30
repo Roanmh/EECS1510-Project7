@@ -7,8 +7,8 @@ public class EntryReport {
     private final Entry ATTEMPTED_ENTRY;
     private final ObservableList<Entry> NAME_MATCHES;
     private final ObservableList<Entry> WHOLE_MATCHES;
-    private final String NAME_ERROR_MSSG;
-    private final String NUMBER_ERROR_MSSG;
+    private final String NAME_ERROR_MSG;
+    private final String NUMBER_ERROR_MSG;
     private final boolean ERROR_FLAG;
     private final boolean NAME_MATCHES_FLAG;
     private final boolean WHOLE_MATCHES_FLAG;
@@ -20,8 +20,8 @@ public class EntryReport {
         ERROR_FLAG = false;
         NAME_MATCHES_FLAG = false;
         WHOLE_MATCHES_FLAG = false;
-        NAME_ERROR_MSSG = "";
-        NUMBER_ERROR_MSSG = "";
+        NAME_ERROR_MSG = "";
+        NUMBER_ERROR_MSG = "";
     }
     
     public EntryReport(Entry attemptedEntry, ObservableList<Entry> nameMatches,
@@ -34,8 +34,8 @@ public class EntryReport {
                           "".equals(numberErrorMessage));
         this.NAME_MATCHES_FLAG = !nameMatches.isEmpty();
         this.WHOLE_MATCHES_FLAG = !wholeMatches.isEmpty();
-        this.NAME_ERROR_MSSG = nameErrorMessage;
-        this.NUMBER_ERROR_MSSG = numberErrorMessage;
+        this.NAME_ERROR_MSG = nameErrorMessage;
+        this.NUMBER_ERROR_MSG = numberErrorMessage;
     }
     
     public Entry getATTEMPTED_ENTRY() {
@@ -50,12 +50,12 @@ public class EntryReport {
         return WHOLE_MATCHES;
     }
 
-    public String getNAME_ERROR_MSSG() {
-        return NAME_ERROR_MSSG;
+    public String getNAME_ERROR_MSG() {
+        return NAME_ERROR_MSG;
     }
 
-    public String getNUMBER_ERROR_MSSG() {
-        return NUMBER_ERROR_MSSG;
+    public String getNUMBER_ERROR_MSG() {
+        return NUMBER_ERROR_MSG;
     }
 
     public boolean isERROR_FLAG() {
