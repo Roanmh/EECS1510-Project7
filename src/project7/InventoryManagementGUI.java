@@ -25,6 +25,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.*;
 import javafx.scene.control.ButtonBar.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
@@ -159,17 +161,17 @@ public class InventoryManagementGUI extends Application {
      * 
      */
     private void setupSidePanel() {
-        Button addEntry = new Button("Add Entry");
+        Button addEntry = new Button();
         addEntry.setOnAction((ActionEvent e) -> {
             addEntryHandler();
         });
 
-        Button editEntry = new Button("Edit Entry");
+        Button editEntry = new Button();
         editEntry.setOnAction((ActionEvent e) -> {
             editEntryHandler();
         });
 
-        Button deleteEntry = new Button("Delete Entry");
+        Button deleteEntry = new Button();
         deleteEntry.setOnAction((ActionEvent e) -> {
             deleteEntryHandler();
         });
@@ -177,6 +179,13 @@ public class InventoryManagementGUI extends Application {
         addEntry.setMaxWidth(Double.MAX_VALUE);
         editEntry.setMaxWidth(Double.MAX_VALUE);
         deleteEntry.setMaxWidth(Double.MAX_VALUE);
+        
+        Image imgAdd = new Image("file:img/green_plus.png");
+        addEntry.setGraphic(new ImageView(imgAdd));
+        Image imgEdit = new Image("file:img/pencil.png");
+        editEntry.setGraphic(new ImageView(imgEdit));
+        Image imgDel = new Image("file:img/red_x.png");
+        deleteEntry.setGraphic(new ImageView(imgDel));
         
         VBox vBoxButtons = new VBox();
         vBoxButtons.setSpacing(5);
