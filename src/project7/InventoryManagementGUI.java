@@ -19,6 +19,8 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -32,6 +34,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javax.xml.ws.Response;
 
 public class InventoryManagementGUI extends Application {
     private static final TableView<Entry> TABLE = new TableView<>();
@@ -113,12 +116,12 @@ public class InventoryManagementGUI extends Application {
         {
             MenuItem addEntry = new MenuItem("Add Entry");
             addEntry.setOnAction((ActionEvent e) -> {
-                addEntryHandler();
+                entryDialogHandler(false);
             });
 
             MenuItem editEntry = new MenuItem("Edit Entry");
             editEntry.setOnAction((ActionEvent e) -> {
-                editEntryHandler();
+                entryDialogHandler(true);
             });
 
             MenuItem deleteEntry = new MenuItem("Delete Entry");
@@ -177,12 +180,12 @@ public class InventoryManagementGUI extends Application {
     private void setupSidePanel() {
         Button addEntry = new Button("Add");
         addEntry.setOnAction((ActionEvent e) -> {
-            addEntryHandler();
+            entryDialogHandler(false);
         });
 
         Button editEntry = new Button("Edit");
         editEntry.setOnAction((ActionEvent e) -> {
-            editEntryHandler();
+            entryDialogHandler(true);
         });
 
         Button deleteEntry = new Button("Delete");
@@ -462,6 +465,7 @@ public class InventoryManagementGUI extends Application {
         alert.setContentText("Created by Caleb Davenport "
                 + "and Roan Martin-Hayden\n\n"
                 + "Spring 2016");
+        alert.setGraphic(new ImageView(new Image("file:img/about.png", 100, 100, true, true)));
 
         alert.showAndWait();
     }
@@ -474,12 +478,176 @@ public class InventoryManagementGUI extends Application {
         launch(args);
     }
     
-    private static void duplicateDialogHandler() {
-        Dialog dialog = new Dialog();
-        dialog.setTitle("Add Entry");
-        dialog.setHeaderText("Add Entry");
-        ButtonType loginButtonType = new ButtonType("Add", ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+    private static Optional<ButtonType> duplicateDialogHandler(
+            ObservableList<Entry> nameMatches,
+            ObservableList<Entry> wholeMatches) {
+        
+        Dialog dialog;
+        BorderPane borderPane;
+        TableView<Entry> duplicatesTable;
+        ObservableList<Entry> combinedMatches;
+        
+        dialog = new Dialog();
+        dialog.setTitle("Duplcates Found");
+        dialog.setHeaderText("Duplicates Found");
+        
+        ButtonType confirmButton = new ButtonType("Confirm", ButtonData.YES);
+        ButtonType changeButton = new ButtonType("Change", ButtonData.BACK_PREVIOUS);
+        ButtonType cancelButton = new ButtonType("Cancel", ButtonData.SMALL_GAP);
+        dialog.getDialogPane().getButtonTypes().addAll(cancelButton, changeButton, confirmButton);
+        
+        duplicatesTable = new TableView<>();
+        duplicatesTable.getColumns().clear();
 
+        // TODO: Add Identifier of Type (Requires wrapper class or more info...
+//        TableColumn matchCol = new TableColumn("Match");
+//        matchCol.setCellValueFactory(new PropertyValueFactory<>("match"));
+        
+        TableColumn nameCol = new TableColumn("Name");
+        nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        
+        TableColumn numberCol = new TableColumn("Number");
+        numberCol.setCellValueFactory(new PropertyValueFactory<>("number"));
+        
+        TableColumn notesCol = new TableColumn("Notes");
+        notesCol.setCellValueFactory(new PropertyValueFactory<>("notes"));
+        
+        combinedMatches = FXCollections.observableArrayList();
+        combinedMatches.addAll(wholeMatches);
+        combinedMatches.addAll(nameMatches);
+        duplicatesTable.setItems(combinedMatches);
+        duplicatesTable.getColumns().addAll(nameCol, numberCol, notesCol);
+        duplicatesTable.setPlaceholder(new Label("No entries found"));
+        duplicatesTable.maxHeightProperty().set(120);
+        
+        borderPane = new BorderPane();
+        borderPane.setCenter(duplicatesTable);
+        
+        dialog.getDialogPane().setContent(borderPane);
+        
+        return dialog.showAndWait();
+    }
+    
+    private void entryDialogHandler(boolean isEdit) {
+        String actionStr;
+        Entry editEntry;
+        
+        EntryReport report;
+        
+        actionStr = isEdit ? "Edit" : "Add";
+        Dialog dialog = new Dialog();
+        dialog.setTitle(actionStr + " Entry");
+        dialog.setHeaderText(actionStr + " Entry");
+        ButtonType loginButtonType = new ButtonType(actionStr, ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType,
+                                                       ButtonType.CANCEL);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        TextField name = new TextField();
+        name.setPromptText("Name");
+        TextField number = new TextField();
+        number.setPromptText("Quantity");
+        TextField notes = new TextField();
+        notes.setPromptText("Notes");
+
+        if (isEdit) {
+            editEntry = TABLE.getSelectionModel().getSelectedItem();
+            name.setText(editEntry.getName());
+            number.setText(editEntry.getNumber());
+            notes.setText(editEntry.getNotes());
+        } else {
+            editEntry = new Entry();
+        }
+        
+        grid.add(new Label("Name:"), 0, 0);
+        grid.add(name, 1, 0);
+        grid.add(new Label("Quantity:"), 0, 1);
+        grid.add(number, 1, 1);
+        grid.add(new Label("Notes:"), 0, 2);
+        grid.add(notes, 1, 2);
+        
+        // Error Notifications
+        Label errText1 = new Label("");
+        errText1.setTextFill(Color.web("#F00"));
+        Label errText2 = new Label("");
+        errText2.setTextFill(Color.web("#F00"));
+        Label errText3 = new Label("");
+        errText3.setTextFill(Color.web("#F00"));
+        
+        grid.add(errText1, 2, 0);
+        grid.add(errText2, 2, 1);
+        grid.add(errText3, 2, 2);
+
+        dialog.getDialogPane().setContent(grid);
+        Platform.runLater(() -> name.requestFocus());
+        
+        Optional<ButtonType> entryResult;
+        Optional<ButtonType> confirmResult;
+        boolean isRetry = true;
+        while (isRetry) {
+            errText1.setText(lastReport.getNAME_ERROR_MSG());
+            errText2.setText(lastReport.getNUMBER_ERROR_MSG());
+            entryResult = dialog.showAndWait();
+            System.out.println(entryResult.get());
+            if (entryResult.get().getButtonData() == ButtonData.OK_DONE) {
+                lastReport = InventoryManagement.checkAddEntry(name.getText(),
+                                                               number.getText(),
+                                                               number.
+                                                               getText());
+                if (lastReport.isOK()) {
+                    if (isEdit) {
+                        InventoryManagement.editEntry(editEntry, name.getText(),
+                                                      number.getText(),
+                                                      notes.getText());
+                    } else {
+                        InventoryManagement.addEntry(name.getText(),
+                                                     number.getText(),
+                                                     notes.getText());
+                    }
+                    isRetry = false;
+                } else {
+                    if (lastReport.isERROR_FLAG()) {
+                        isRetry = true;
+                    } else if (lastReport.isAnyMatches()) {
+                        confirmResult = duplicateDialogHandler(lastReport.
+                                getNAME_MATCHES(),
+                                lastReport.getWHOLE_MATCHES());
+                        if (null != confirmResult.get().getButtonData())
+                            switch (confirmResult.get().getButtonData()) {
+                            case YES:
+                                if (isEdit) {
+                                    InventoryManagement.editEntry(editEntry,
+                                            name.getText(), number.getText(),
+                                            notes.getText());
+                                } else {
+                                    InventoryManagement.addEntry(name.getText(),
+                                            number.getText(),
+                                            notes.getText());
+                                }
+                                isRetry = false;
+                                break;
+                            case BACK_PREVIOUS:
+                                break;
+                            case CANCEL_CLOSE:
+                                isRetry = false;
+                                break;
+                            default:
+                                isRetry = false;
+                                break;
+                        }
+                    } else {
+                        isRetry = false;
+                    }
+                }
+            } else {
+                isRetry = false;
+            }
+        }
+        lastReport = new EntryReport();
+        updateTable();
     }
 }

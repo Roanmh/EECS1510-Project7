@@ -111,9 +111,8 @@ public class InventoryManagement {
     
     public static void editEntry(Entry replacedEntry, String name,
                                   String number, String notes) {
-        ENTRY_LIST.add(ENTRY_LIST.indexOf(replacedEntry), new Entry(name, number, notes));
+        addEntry(name, number, notes);
         deleteEntry(replacedEntry);
-        customSort(ENTRY_LIST);
     }
 
     
@@ -271,12 +270,12 @@ public class InventoryManagement {
         
         /// Tests, ordered by priority
         // Numerals Check
-        if (!number.matches("[0-9]+(\\.[0-9]*)?")) {
+        if (!number.matches("-?\\d*\\.?\\d+")) {
             errMessage = "Not a number.";
         }
         
         // Negativity Check
-        if (number.matches("-")) {
+        if (number.matches("-\\d*\\.?\\d")) {
             errMessage = "Can't have negative inventory.";
         }
         
