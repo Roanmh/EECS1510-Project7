@@ -71,4 +71,26 @@ public class Entry {
     public String notes() {
         return notes.get();
     }
+    
+    /**
+     * Returns property object of name.
+     * @return property object of name
+     */
+    public SimpleStringProperty nameProperty() {
+        return name;
+    }
+    /**
+     * Returns property object of number.
+     * @return property object of number
+     */
+    public SimpleStringProperty numberProperty() {
+        return number;
+    }
+    /**
+     * Returns property object of notes.
+     * @return property object of notes
+     */
+    public SimpleStringProperty notesProperty() {
+        return notes;
+    }
 }
