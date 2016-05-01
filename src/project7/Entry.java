@@ -17,7 +17,6 @@ import javafx.beans.property.SimpleStringProperty;
 
 public class Entry {
     private SimpleStringProperty name, number, notes;
-    private boolean exists;
     Entry() {
         clear();
     }
@@ -25,18 +24,15 @@ public class Entry {
         this.name = new SimpleStringProperty(name);
         this.number = new SimpleStringProperty(number);
         this.notes = new SimpleStringProperty(notes);
-        exists = true;
     }
     private void clear() {
         this.name = new SimpleStringProperty("");
         this.number = new SimpleStringProperty("");
         this.notes = new SimpleStringProperty("");
-        exists = false;
     }
     public String getName() { return name.get(); }
     public String getNumber() { return number.get(); }
     public String getNotes() { return notes.get(); }
-    public boolean exists() { return exists; }
 
     @Override
     public String toString() {

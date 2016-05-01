@@ -23,7 +23,7 @@ import java.util.Scanner;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class InventoryManagement {
+public class Inventory {
     private static String invLocation = "";
     private static final ArrayList<Entry> ENTRY_LIST = new ArrayList<>();
     private static String filterCriterion = "Name";
@@ -379,7 +379,7 @@ public class InventoryManagement {
      * @param filterCriterion field that the filter will use
      */
     public static void setFilterCriterion(String filterCriterion) {
-        InventoryManagement.filterCriterion = filterCriterion;
+        Inventory.filterCriterion = filterCriterion;
     }
     
     /**

@@ -9,7 +9,8 @@
 * via individual parameters or parsing the individual lines
 * The data is then exported via public functions.
 *
- */
+*/
+
 package project7;
 
 import java.io.File;
@@ -186,7 +187,7 @@ public class InventoryManagementGUI extends Application {
                 .subtract(nameCol.widthProperty().multiply(1.5))
                 .subtract(2));
 
-        TABLE.setItems(InventoryManagement.filteredEntries(filteredText));
+        TABLE.setItems(Inventory.filteredEntries(filteredText));
         TABLE.getColumns().addAll(nameCol, numberCol, notesCol);
         TABLE.setPlaceholder(new Label("No entries found"));
     }
@@ -284,7 +285,7 @@ public class InventoryManagementGUI extends Application {
      *
      */
     private void handleDeleteEntry() {
-        InventoryManagement.deleteEntry(TABLE.getSelectionModel().
+        Inventory.deleteEntry(TABLE.getSelectionModel().
                 getSelectedItem());
         updateTable();
     }
@@ -303,7 +304,7 @@ public class InventoryManagementGUI extends Application {
      * @param type
      */
     private void handleFilterCriteria(String type) {
-        InventoryManagement.setFilterCriterion(type);
+        Inventory.setFilterCriterion(type);
         updateTable();
     }
 
@@ -326,7 +327,7 @@ public class InventoryManagementGUI extends Application {
 
         result = confirmation.showAndWait();
         if (result.isPresent() && result.get() == confirmButtonType) {
-            InventoryManagement.clearInventory();
+            Inventory.clearInventory();
             updateTable();
         }
     }
@@ -348,7 +349,7 @@ public class InventoryManagementGUI extends Application {
                 new FileChooser.ExtensionFilter("All Files", "*.*"));
         file = fileChooser.showOpenDialog(stage);
         if (file == null) return;
-        InventoryManagement.loadInventory(file.getPath());
+        Inventory.loadInventory(file.getPath());
         updateTable();
         primaryStage.setTitle("Inventory Management - " + file.getName());
     }
@@ -370,7 +371,7 @@ public class InventoryManagementGUI extends Application {
                 new FileChooser.ExtensionFilter("All Files", "*.*"));
         file = fileChooser.showSaveDialog(stage);
         if (file == null) return;
-        InventoryManagement.saveInventory(file.getPath());
+        Inventory.saveInventory(file.getPath());
         primaryStage.setTitle("Inventory Management - " + file.getName());
     }
 
@@ -390,9 +391,9 @@ public class InventoryManagementGUI extends Application {
         alert.showAndWait();
     }
 
-    private static Optional<ButtonType> duplicateDialogResult(
-            ObservableList<Entry> nameMatches,
-            ObservableList<Entry> wholeMatches) {
+    private static Optional<ButtonType> duplicateResult(
+                                        ObservableList<Entry> nameMatches,
+                                        ObservableList<Entry> wholeMatches) {
 
         Dialog dialog;
         BorderPane borderPane;
@@ -461,7 +462,7 @@ public class InventoryManagementGUI extends Application {
         dialog.setHeaderText(actionString + " Entry");
         confirmButtonType = new ButtonType(actionString, ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(confirmButtonType,
-                ButtonType.CANCEL);
+                                                       ButtonType.CANCEL);
 
         grid = new GridPane();
         grid.setHgap(10);
@@ -507,56 +508,48 @@ public class InventoryManagementGUI extends Application {
             errTextNumber.setText(lastReport.getNUMBER_ERROR_MSG());
             entryResult = dialog.showAndWait();
             if (entryResult.get().getButtonData() == ButtonData.OK_DONE) {
-                lastReport = InventoryManagement.checkAddEntry(name.getText(),
-                        number.getText(), notes.getText());
+                lastReport = Inventory.checkAddEntry(name.getText(),
+                                                     number.getText(),
+                                                     notes.getText());
                 if (lastReport.isOK()) {
                     if (isEdit) {
-                        InventoryManagement.editEntry(editableEntry,
-                                name.getText(),
-                                number.getText(),
-                                notes.getText());
+                        Inventory.editEntry(editableEntry,
+                                            name.getText(),
+                                            number.getText(),
+                                            notes.getText());
                     } else {
-                        InventoryManagement.addEntry(name.getText(),
-                                number.getText(),
-                                notes.getText());
+                        Inventory.addEntry(name.getText(),
+                                           number.getText(),
+                                           notes.getText());
                     }
                     isRetry = false;
-                } else if (lastReport.isERROR_FLAG()) {
-                    isRetry = true;
-                } else if (lastReport.isAnyMatches()) {
-                    confirmResult = duplicateDialogResult(lastReport.
-                            getNAME_MATCHES(),
-                            lastReport.getWHOLE_MATCHES());
+                } else if (lastReport.isERROR_FLAG()) isRetry = true;
+                else if (lastReport.isAnyMatches()) {
+                    confirmResult
+                            = duplicateResult(lastReport.getNAME_MATCHES(),
+                                              lastReport.getWHOLE_MATCHES());
                     if (null != confirmResult.get().getButtonData()) {
                         switch (confirmResult.get().getButtonData()) {
                             case YES:
                                 if (isEdit) {
-                                    InventoryManagement.editEntry(editableEntry,
-                                            name.getText(), number.getText(),
-                                            notes.getText());
+                                    Inventory.editEntry(editableEntry,
+                                                        name.getText(),
+                                                        number.getText(),
+                                                        notes.getText());
                                 } else {
-                                    InventoryManagement.addEntry(name.getText(),
-                                            number.getText(),
-                                            notes.getText());
+                                    Inventory.addEntry(name.getText(),
+                                                       number.getText(),
+                                                       notes.getText());
                                 }
-                                isRetry = false;
-                                break;
-                            case BACK_PREVIOUS:
-                                break;
                             case CANCEL_CLOSE:
-                                isRetry = false;
-                                break;
                             default:
                                 isRetry = false;
+                            case BACK_PREVIOUS:
                                 break;
                         }
                     }
-                } else {
-                    isRetry = false;
-                }
-            } else {
-                isRetry = false;
-            }
+                } else isRetry = false;
+            } else isRetry = false;
         }
         lastReport = new EntryReport();
         updateTable();
