@@ -65,7 +65,7 @@ public class InventoryManagementGUI extends Application {
     private static EntryReport lastReport = new EntryReport();
 
     /**
-     *
+     * Initializes the GUI
      * @param primaryStage
      */
     @Override
@@ -94,7 +94,7 @@ public class InventoryManagementGUI extends Application {
     }
 
     /**
-     *
+     * Adds the menus to the menu bar
      */
     private void addMenus() {
         Menu menuFile;
@@ -163,7 +163,7 @@ public class InventoryManagementGUI extends Application {
     }
 
     /**
-     *
+     * Updates the table with the current list of entries
      */
     private void updateTable() {
         TableColumn nameCol;
@@ -193,7 +193,7 @@ public class InventoryManagementGUI extends Application {
     }
 
     /**
-     *
+     * Initializes the panel on the right
      */
     private void setupSidePanel() {
         Button buttonAddEntry = new Button("Add");
@@ -230,7 +230,7 @@ public class InventoryManagementGUI extends Application {
     }
 
     /**
-     *
+     * Initializes the filter on the bottom of the GUI
      */
     private void setupBottomFilter() {
         TextField textFieldFilter = new TextField();
@@ -258,7 +258,7 @@ public class InventoryManagementGUI extends Application {
     }
 
     /**
-     *
+     * Sets up the margins between all the elements in the BorderPane
      */
     private void setupMargins() {
         BorderPane.setMargin(TABLE, new Insets(0, 10, 10, 0));
@@ -268,21 +268,21 @@ public class InventoryManagementGUI extends Application {
     }
 
     /**
-     *
+     * Handles adding an entry
      */
     private void handleAddEntry() {
         handleEntryDialog(false);
     }
 
     /**
-     *
+     * Handles editing an entry
      */
     private void handleEditEntry() {
         handleEntryDialog(true);
     }
 
     /**
-     *
+     * Handles deleting an entry
      */
     private void handleDeleteEntry() {
         Inventory.deleteEntry(TABLE.getSelectionModel().
@@ -291,7 +291,7 @@ public class InventoryManagementGUI extends Application {
     }
 
     /**
-     *
+     * Handles a change to the filter box
      * @param s
      */
     private void handleFilter(String s) {
@@ -300,7 +300,7 @@ public class InventoryManagementGUI extends Application {
     }
 
     /**
-     *
+     * Handles a change to the filter criteria
      * @param type
      */
     private void handleFilterCriteria(String type) {
@@ -309,7 +309,7 @@ public class InventoryManagementGUI extends Application {
     }
 
     /**
-     *
+     * Handles a new list request
      */
     private void handleNewList() {
         Alert confirmation;
@@ -333,7 +333,7 @@ public class InventoryManagementGUI extends Application {
     }
 
     /**
-     *
+     * Handles opening a file
      */
     private void handleOpenList() {
         Stage stage;
@@ -355,7 +355,7 @@ public class InventoryManagementGUI extends Application {
     }
 
     /**
-     *
+     * Handles saving a file
      */
     private void handleSaveList() {
         Stage stage;
@@ -376,7 +376,7 @@ public class InventoryManagementGUI extends Application {
     }
 
     /**
-     *
+     * Handles the About alert
      */
     private void handleAboutAlert() {
         Alert alert;
@@ -390,7 +390,13 @@ public class InventoryManagementGUI extends Application {
                                                  100, 100, true, true)));
         alert.showAndWait();
     }
-
+    
+    /**
+     * Give the user a choice when a duplicate entry is found
+     * @param nameMatches
+     * @param wholeMatches
+     * @return The result of whether the user clicked Continue, Edit or Cancel
+     */
     private static Optional<ButtonType> duplicateResult(
                                         ObservableList<Entry> nameMatches,
                                         ObservableList<Entry> wholeMatches) {
@@ -442,6 +448,10 @@ public class InventoryManagementGUI extends Application {
         return dialog.showAndWait();
     }
 
+    /**
+     * Handles the dialog box for editing or adding an entry
+     * @param isEdit Determines if the entry is for an edit or an addition
+     */
     private void handleEntryDialog(boolean isEdit) {
         String actionString;
         Entry editableEntry;
@@ -525,8 +535,7 @@ public class InventoryManagementGUI extends Application {
                     isRetry = false;
                 } else if (lastReport.isERROR_FLAG()) isRetry = true;
                 else if (lastReport.isAnyMatches()) {
-                    confirmResult
-                            = duplicateResult(lastReport.getNAME_MATCHES(),
+                    confirmResult = duplicateResult(lastReport.getNAME_MATCHES(),
                                               lastReport.getWHOLE_MATCHES());
                     if (null != confirmResult.get().getButtonData()) {
                         switch (confirmResult.get().getButtonData()) {
@@ -556,7 +565,7 @@ public class InventoryManagementGUI extends Application {
     }
 
     /**
-     *
+     * Entry point for running the program
      * @param args
      */
     public static void main(String[] args) {
