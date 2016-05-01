@@ -50,4 +50,10 @@
     nbproject/build-impl.xml and nbproject/jfx-impl.xml.
 
     -->
+    <target name="-post-jar">
+     <mkdir dir="${dist.dir}/img"/>
+        <copy todir="${dist.dir}/img">
+            <fileset dir="${basedir}/img" />
+        </copy>
+    </target>
 </project>
