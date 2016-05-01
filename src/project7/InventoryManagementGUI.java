@@ -544,7 +544,7 @@ public class InventoryManagementGUI extends Application {
                                             lastReport.getWHOLE_MATCHES());
                     if (null != confirmResult.get().getButtonData()) {
                         switch (confirmResult.get().getButtonData()) {
-                            case YES:
+                            case "Continue":
                                 if (isEdit) {
                                     Inventory.editEntry(editableEntry,
                                                         name.getText(),
@@ -560,11 +560,8 @@ public class InventoryManagementGUI extends Application {
                             case "Edit":
                                 break;
                             case "Cancel":
-                                isRetry = false;
-                                break;
                             default:
                                 isRetry = false;
-                            case BACK_PREVIOUS:
                                 break;
                         }
                     }
