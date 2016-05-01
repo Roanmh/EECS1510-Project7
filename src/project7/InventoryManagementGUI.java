@@ -15,8 +15,6 @@
 */
 package project7;
 
-import java.io.File;
-import java.util.Optional;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -26,20 +24,8 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
+import javafx.scene.control.*;
 import javafx.scene.control.ButtonBar.ButtonData;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -55,13 +41,16 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import java.io.File;
+import java.util.Optional;
+
 public class InventoryManagementGUI extends Application {
 
-    private static final TableView<Entry> TABLE = new TableView<>();
-    private static final MenuBar MENU_BAR = new MenuBar();
-    private static final HBox BOTTOM_BOX = new HBox();
-    private static final VBox RIGHT_BOX = new VBox();
-    private static final BorderPane ROOT = new BorderPane();
+    private static TableView<Entry> table;
+    private static MenuBar MENU_BAR;
+    private static HBox BOTTOM_BOX;
+    private static VBox RIGHT_BOX;
+    private static BorderPane ROOT;
     private static String filteredText = "";
     private static Stage primaryStage = null;
     private static EntryReport lastReport = new EntryReport();
@@ -72,6 +61,13 @@ public class InventoryManagementGUI extends Application {
      */
     @Override
     public void start(Stage primaryStage) {
+        //Class variable initializations
+        table = new TableView<>();
+        MENU_BAR = new MenuBar();
+        BOTTOM_BOX = new HBox();
+        RIGHT_BOX  = new VBox();
+        ROOT = new BorderPane();
+
         InventoryManagementGUI.primaryStage = primaryStage;
         Scene scene;
 
@@ -80,10 +76,10 @@ public class InventoryManagementGUI extends Application {
         setupSidePanel();
         setupMargins();
 
-        BorderPane.setMargin(TABLE, new Insets(0, 10, 0, 10));
+        BorderPane.setMargin(table, new Insets(0, 10, 0, 10));
         BorderPane.setMargin(MENU_BAR, new Insets(0, 0, 10, 0));
         ROOT.setTop(MENU_BAR);
-        ROOT.setCenter(TABLE);
+        ROOT.setCenter(table);
         ROOT.setRight(RIGHT_BOX);
         ROOT.setBottom(BOTTOM_BOX);
 
@@ -172,7 +168,7 @@ public class InventoryManagementGUI extends Application {
         TableColumn numberCol;
         TableColumn notesCol;
         
-        TABLE.getColumns().clear();
+        table.getColumns().clear();
         nameCol = new TableColumn("Name");
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         numberCol = new TableColumn("#");
@@ -181,17 +177,17 @@ public class InventoryManagementGUI extends Application {
         notesCol.setCellValueFactory(new PropertyValueFactory<>("notes"));
 
         nameCol.minWidthProperty().set(80);
-        nameCol.prefWidthProperty().bind(TABLE.widthProperty()
+        nameCol.prefWidthProperty().bind(table.widthProperty()
                 .multiply(0.1));
         numberCol.prefWidthProperty().bind(nameCol.widthProperty()
                 .multiply(0.5));
-        notesCol.prefWidthProperty().bind(TABLE.widthProperty()
+        notesCol.prefWidthProperty().bind(table.widthProperty()
                 .subtract(nameCol.widthProperty().multiply(1.5))
                 .subtract(2));
 
-        TABLE.setItems(Inventory.filteredEntries(filteredText));
-        TABLE.getColumns().addAll(nameCol, numberCol, notesCol);
-        TABLE.setPlaceholder(new Label("No entries found"));
+        table.setItems(Inventory.filteredEntries(filteredText));
+        table.getColumns().addAll(nameCol, numberCol, notesCol);
+        table.setPlaceholder(new Label("No entries found"));
     }
 
     /**
@@ -239,7 +235,7 @@ public class InventoryManagementGUI extends Application {
         ComboBox comboBox = new ComboBox();
         
         textFieldFilter.setPromptText("Filter");
-        textFieldFilter.prefWidthProperty().bind(TABLE.widthProperty());
+        textFieldFilter.prefWidthProperty().bind(table.widthProperty());
         textFieldFilter.setOnKeyReleased((KeyEvent e) -> {
             handleFilter(textFieldFilter.getText());
         });
@@ -263,7 +259,7 @@ public class InventoryManagementGUI extends Application {
      * Sets up the margins between all the elements in the BorderPane
      */
     private void setupMargins() {
-        BorderPane.setMargin(TABLE, new Insets(0, 10, 10, 0));
+        BorderPane.setMargin(table, new Insets(0, 10, 10, 0));
         BorderPane.setMargin(MENU_BAR, new Insets(0, 0, 10, 0));
         BorderPane.setMargin(RIGHT_BOX, new Insets(0, 10, 0, 0));
         BorderPane.setMargin(BOTTOM_BOX, new Insets(5, 10, 5, 10));
@@ -287,7 +283,7 @@ public class InventoryManagementGUI extends Application {
      * Handles deleting an entry
      */
     private void handleDeleteEntry() {
-        Inventory.deleteEntry(TABLE.getSelectionModel().
+        Inventory.deleteEntry(table.getSelectionModel().
                 getSelectedItem());
         updateTable();
     }
@@ -491,7 +487,7 @@ public class InventoryManagementGUI extends Application {
         notes.setPromptText("Notes");
 
         if (isEdit) {
-            editableEntry = TABLE.getSelectionModel().getSelectedItem();
+            editableEntry = table.getSelectionModel().getSelectedItem();
             name.setText(editableEntry.name());
             number.setText(editableEntry.number());
             notes.setText(editableEntry.notes());
