@@ -9,7 +9,10 @@
 * via individual parameters or parsing the individual lines
 * The data is then exported via public functions.
 *
- */
+* @(1.0)Inventory.java 1.0 4/30/2016 [Roan Martin-Hayden, Caleb Davenport]
+*
+* Copyright (c) 2016 Roan Martin-Hayden, Caleb Davenport. All Rights Reserved
+*/
 package project7;
 
 import java.io.File;

@@ -7,8 +7,7 @@
 * Main class that handles user input
 * and provides the functions based on the input.
 *
-* @(1.0)Inventory.java 1.0 4/30/2016 [Roan Martin-Hayden,
-* Caleb Davenport]
+* @(1.0)Inventory.java 1.0 4/30/2016 [Roan Martin-Hayden, Caleb Davenport]
 *
 * Copyright (c) 2016 Roan Martin-Hayden, Caleb Davenport. All Rights Reserved
 */
@@ -31,8 +30,7 @@ public class Inventory {
     private static String filterCriterion = "Name";
 
     /**
-     * Finds an entry and returns the location or -1 if not found
-     * 
+     * Finds an entry and returns the location or -1 if not found.
      * @param name Name to search for
      * @return Index location of the entry or -1 if not found
      */
@@ -50,16 +48,11 @@ public class Inventory {
     }
     
     /**
-     * Adds Entry to the inventory array
-     * 
+     * Adds Entry to the inventory array.
      * @param name Name of entry
      * @param number Quantity of entry
      * @param notes Quantity of entry
-     * 
      * @return Highest priority error if encountered, empty if success
-     * 
-     * TODO: Force add/Overwrite entry mechanic
-     * TODO: Better Entry Overwrite
      */
     public static EntryReport addEntryReport(String name, String number,
                                        String notes) {
@@ -71,18 +64,18 @@ public class Inventory {
     
         // Find Name Matches
         matchesByName = FXCollections.observableArrayList();
-        for (Entry e : ENTRY_LIST) {
-            if (customEquals(e.name(), name)) { 
-                matchesByName.add(e);
+        for (Entry entry : ENTRY_LIST) {
+            if (customEquals(entry.name(), name)) { 
+                matchesByName.add(entry);
             }
         }
                 
         // Find whole Matches
         matchesInWhole = FXCollections.observableArrayList();
-        for (Entry e : ENTRY_LIST) {
-            if (customEquals(e.name(), name) &&
-                customEquals(e.number(), number) &&
-                customEquals(e.notes(), notes)) matchesInWhole.add(e);
+        for (Entry entry : ENTRY_LIST) {
+            if (customEquals(entry.name(), name) &&
+                customEquals(entry.number(), number) &&
+                customEquals(entry.notes(), notes)) matchesInWhole.add(entry);
         }
                 
         
@@ -98,7 +91,6 @@ public class Inventory {
     
     /**
      * Adds entry (regardless of duplicate status).
-     * 
      * @param name Name to be entered (depending on overwriteName if editing
      * existing entry)
      * @param number Number to be entered
@@ -126,7 +118,6 @@ public class Inventory {
     
     /**
      * Finds entry by name and deletes it.
-     * 
      * @param name name of entry to delete
      */
     public static void deleteEntry(String name) {
@@ -137,8 +128,7 @@ public class Inventory {
     }
 
     /**
-     * Deletes entry at the given index.
-     * 
+     * Deletes entry at the given index. 
      * @param index location of entry to delete
      */
     public static void deleteEntry(int index) {
@@ -146,8 +136,7 @@ public class Inventory {
     }
     
     /**
-     * Deletes entry as specified by the object itself
-     * 
+     * Deletes entry as specified by the object itself.
      * @param entry Object to delete
      */
     public static void deleteEntry(Entry entry) {
@@ -155,15 +144,14 @@ public class Inventory {
     }
     
     /**
-     * Loads entries from a file into the stored inventory
-     * 
+     * Loads entries from a file into the stored inventory.
      * @param pathStr Path to load from
      * @return Error message if found
      */
     public static String loadInventory(String pathStr) {
         String errMessage;
         File file;
-        Scanner invIn;
+        Scanner inventoryIn;
         String[] tempVals;
         String[] entryVals;
         
@@ -174,9 +162,9 @@ public class Inventory {
         errMessage = "";
         file = new File(pathStr);
         try {
-            invIn = new Scanner(file);
-            while (invIn.hasNextLine()) {
-                tempVals = invIn.nextLine().split("\t");
+            inventoryIn = new Scanner(file);
+            while (inventoryIn.hasNextLine()) {
+                tempVals = inventoryIn.nextLine().split("\t");
                 System.arraycopy(tempVals, 0, entryVals, 0, tempVals.length);
                 addEntry(entryVals[0], entryVals[1], entryVals[2]);
             }
@@ -188,25 +176,22 @@ public class Inventory {
     }
     
     /**
-     * Store inventory into specified file
-     * 
+     * Store inventory into specified file.
      * @param pathStr Location at which to store file
      * @return Error message if found
-     * 
-     * TODO: Overwrite warning
      */
     public static String saveInventory(String pathStr) {
         String errMessage;
-        PrintStream invOut;
+        PrintStream inventoryOut;
         
         errMessage = "";
         try {
-            invOut = new PrintStream(pathStr);
+            inventoryOut = new PrintStream(pathStr);
             for (Entry entryOut : ENTRY_LIST) {
-                invOut.printf("%s\t%s\t%s\n", entryOut.name(),
+                inventoryOut.printf("%s\t%s\t%s\n", entryOut.name(),
                                   entryOut.number(), entryOut.notes());
             }
-            invOut.close();
+            inventoryOut.close();
         } catch (FileNotFoundException ex) {
             errMessage = "File not found.";
             System.err.println(ex.getMessage());
@@ -216,15 +201,14 @@ public class Inventory {
     }
     
     /**
-     * Clears entire Inventory (for new list)
+     * Clears entire Inventory (for new list).
      */
     public static void clearInventory() {
         ENTRY_LIST.clear();
     }
     
     /**
-     * Checks that a name is formatted correctly
-     * 
+     * Checks that a name is formatted correctly.
      * @param name Name to be tested
      * @return Highest priority error message, empty if OK
      */
@@ -245,8 +229,7 @@ public class Inventory {
     }
     
     /**
-     * Checks that a number is formatted correctly
-     * 
+     * Checks that a number is formatted correctly.
      * @param number Number to be tested
      * @return Highest priority error message, empty if OK
      */
@@ -270,8 +253,7 @@ public class Inventory {
     }
     
     /**
-     * Returns whether strings are equal with custom qualifications
-     * 
+     * Returns whether strings are equal with custom qualifications.
      * @param name1 First name to check
      * @param name2 Second name to check
      * @return They are equal
@@ -290,15 +272,13 @@ public class Inventory {
     }
     
     /**
-     * Returns whether testStr contains filterStr. Case and external whitespace
-     * ignored
-     * 
+     * Returns whether testStr contains filterStr (Case and external whitespace
+     * ignored).
      * @param testStr String to be checked for filterStr
      * @param filterStr String to be found in testStr
      * @return They are equal
      */
     public static boolean customContains(String testStr, String filterStr) {
-        
         // Ingore case
         testStr = testStr.toLowerCase();
         filterStr = filterStr.toLowerCase();
@@ -311,28 +291,26 @@ public class Inventory {
     }
     
     /**
-     * Sorts entry objects based on their names
-     * 
+     * Sorts entry objects based on their names.
      * @param list List to be sorted (Affects list)
      */
     @SuppressWarnings("Convert2Lambda")
     private static void customSort(ArrayList<Entry> list) {
-        Comparator entrycomparator;
+        Comparator entryComparator;
         
-        entrycomparator = new Comparator<Entry>() {
+        entryComparator = new Comparator<Entry>() {
             @Override
             public int compare(Entry e1, Entry e2) {
                 return e1.name().compareToIgnoreCase(e2.name());
             }
         };
         
-        Collections.sort(list, entrycomparator);
+        Collections.sort(list, entryComparator);
     }
     
     /**
-     * Returns a filtered (and observable) version of list given the string and
-     * 
-     * 
+     * Returns a filtered (and observable) version of list given the string and 
+     * criterion.
      * @param filtStr String to filter the text by
      * @return ObserableList with only the elements to display
      */
@@ -354,7 +332,7 @@ public class Inventory {
     }
         
     /**
-     * Get the field that the filter will use
+     * Get the field that the filter will use.
      * @return field that the filter will use
      */
     public static String filterCriterion() {
@@ -362,7 +340,7 @@ public class Inventory {
     }
     
     /**
-     * Set the field that the filter will use
+     * Set the field that the filter will use.
      * @param filterCriterion field that the filter will use
      */
     public static void setFilterCriterion(String filterCriterion) {

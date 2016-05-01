@@ -7,8 +7,7 @@
 * information about the attempted entry, validation errors, and duplicates are
 * contained.
 *
-* @(1.0)Inventory.java 1.0 4/30/2016 [Roan Martin-Hayden,
-* Caleb Davenport]
+* @(1.0)Inventory.java 1.0 4/30/2016 [Roan Martin-Hayden, Caleb Davenport]
 *
 * Copyright (c) 2016 Roan Martin-Hayden, Caleb Davenport. All Rights Reserved
 */

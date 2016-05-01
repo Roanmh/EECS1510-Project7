@@ -8,8 +8,7 @@
 * via individual parameters or parsing the individual lines
 * The data is then exported via public functions.
 *
-* @(1.0)Inventory.java 1.0 4/30/2016 [Roan Martin-Hayden,
-* Caleb Davenport]
+* @(1.0)Inventory.java 1.0 4/30/2016 [Roan Martin-Hayden, Caleb Davenport]
 *
 * Copyright (c) 2016 Roan Martin-Hayden, Caleb Davenport. All Rights Reserved
 */
@@ -53,17 +52,23 @@ public class Entry {
      * Returns name of entry.
      * @return name of entry
      */
-    public String name() { return name.get(); }
+    public String name() {
+        return name.get();
+    }
     
     /**
      * Returns number of entry.
      * @return number of entry object
      */
-    public String number() { return number.get(); }
+    public String number() {
+        return number.get();
+    }
     
     /**
      * Returns notes of entry.
      * @return notes of entry object
      */
-    public String notes() { return notes.get(); }
+    public String notes() {
+        return notes.get();
+    }
 }
