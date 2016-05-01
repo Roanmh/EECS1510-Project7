@@ -13,7 +13,7 @@
 
 package project7;
 
-import javafx.beans.property.*;
+import javafx.beans.property.SimpleStringProperty;
 
 public class Entry {
     private SimpleStringProperty name, number, notes;

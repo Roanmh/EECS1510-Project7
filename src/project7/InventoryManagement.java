@@ -20,10 +20,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Scanner;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -39,13 +39,7 @@ public class InventoryManagement {
      */
     public static int entryIndex(String name) {
         int location;
-        
-        //Normalize String
-        
-        
-        // Not fuund value
         location = -1;
-        
         // Search Algorithm
         for (int i = 0; i < ENTRY_LIST.size(); ++i) {
             if (customEquals(name, ENTRY_LIST.get(i).getName())) {
@@ -143,9 +137,6 @@ public class InventoryManagement {
         index = entryIndex(name);
         if (index == -1) return "Entry not found.";
         else return deleteEntry(index);
-        
-        // Could ha done this
-//        return (entryIndex(name) == -1) ? "blargh" : deleteEntry(entryIndex(name));
     }
 
     /**
@@ -191,8 +182,6 @@ public class InventoryManagement {
         String[] tempVals;
         String[] entryVals;
         
-        invLocation = pathStr;
-        
         ENTRY_LIST.clear();
         
         entryVals = new String[3];
@@ -234,8 +223,8 @@ public class InventoryManagement {
             }
             invOut.close();
         } catch (FileNotFoundException ex) {
-//            errMessage = "File not found.";
-            System.out.println(ex.getMessage());
+            errMessage = "File not found.";
+            System.err.println(ex.getMessage());
         }
         
         return errMessage;
