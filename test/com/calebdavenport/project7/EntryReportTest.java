@@ -41,140 +41,140 @@ public class EntryReportTest {
     }
 
     /**
-     * Test of getATTEMPTED_ENTRY method, of class EntryReport.
+     * Test of attemptedEntry method, of class EntryReport.
      */
     @Test
     public void testGetATTEMPTED_ENTRY() {
         System.out.println("getATTEMPTED_ENTRY");
         EntryReport instance = new EntryReport();
         Entry expResult = null;
-        Entry result = instance.getATTEMPTED_ENTRY();
+        Entry result = instance.attemptedEntry();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
 
     /**
-     * Test of getNAME_MATCHES method, of class EntryReport.
+     * Test of matchesByName method, of class EntryReport.
      */
     @Test
     public void testGetNAME_MATCHES() {
         System.out.println("getNAME_MATCHES");
         EntryReport instance = new EntryReport();
         ObservableList<Entry> expResult = null;
-        ObservableList<Entry> result = instance.getNAME_MATCHES();
+        ObservableList<Entry> result = instance.matchesByName();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
 
     /**
-     * Test of getWHOLE_MATCHES method, of class EntryReport.
+     * Test of matchesInWhole method, of class EntryReport.
      */
     @Test
     public void testGetWHOLE_MATCHES() {
         System.out.println("getWHOLE_MATCHES");
         EntryReport instance = new EntryReport();
         ObservableList<Entry> expResult = null;
-        ObservableList<Entry> result = instance.getWHOLE_MATCHES();
+        ObservableList<Entry> result = instance.matchesInWhole();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
 
     /**
-     * Test of getNAME_ERROR_MSG method, of class EntryReport.
+     * Test of nameErrorMessage method, of class EntryReport.
      */
     @Test
     public void testGetNAME_ERROR_MSG() {
         System.out.println("getNAME_ERROR_MSG");
         EntryReport instance = new EntryReport();
         String expResult = "";
-        String result = instance.getNAME_ERROR_MSG();
+        String result = instance.nameErrorMessage();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
 
     /**
-     * Test of getNUMBER_ERROR_MSG method, of class EntryReport.
+     * Test of numberErrorMessage method, of class EntryReport.
      */
     @Test
     public void testGetNUMBER_ERROR_MSG() {
         System.out.println("getNUMBER_ERROR_MSG");
         EntryReport instance = new EntryReport();
         String expResult = "";
-        String result = instance.getNUMBER_ERROR_MSG();
+        String result = instance.numberErrorMessage();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
 
     /**
-     * Test of isERROR_FLAG method, of class EntryReport.
+     * Test of errorFlag method, of class EntryReport.
      */
     @Test
     public void testIsERROR_FLAG() {
         System.out.println("isERROR_FLAG");
         EntryReport instance = new EntryReport();
         boolean expResult = false;
-        boolean result = instance.isERROR_FLAG();
+        boolean result = instance.errorFlag();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
 
     /**
-     * Test of isNAME_MATCHES_FLAG method, of class EntryReport.
+     * Test of nameMatchesFlag method, of class EntryReport.
      */
     @Test
     public void testIsNAME_MATCHES_FLAG() {
         System.out.println("isNAME_MATCHES_FLAG");
         EntryReport instance = new EntryReport();
         boolean expResult = false;
-        boolean result = instance.isNAME_MATCHES_FLAG();
+        boolean result = instance.nameMatchesFlag();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
 
     /**
-     * Test of isWHOLE_MATCHES_FLAG method, of class EntryReport.
+     * Test of wholeMatchesFlag method, of class EntryReport.
      */
     @Test
     public void testIsWHOLE_MATCHES_FLAG() {
         System.out.println("isWHOLE_MATCHES_FLAG");
         EntryReport instance = new EntryReport();
         boolean expResult = false;
-        boolean result = instance.isWHOLE_MATCHES_FLAG();
+        boolean result = instance.wholeMatchesFlag();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
 
     /**
-     * Test of isAnyMatches method, of class EntryReport.
+     * Test of anyMatches method, of class EntryReport.
      */
     @Test
     public void testIsAnyMatches() {
         System.out.println("isAnyMatches");
         EntryReport instance = new EntryReport();
         boolean expResult = false;
-        boolean result = instance.isAnyMatches();
+        boolean result = instance.anyMatches();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
 
     /**
-     * Test of isOK method, of class EntryReport.
+     * Test of okayStatus method, of class EntryReport.
      */
     @Test
     public void testIsOK() {
         System.out.println("isOK");
         EntryReport instance = new EntryReport();
         boolean expResult = false;
-        boolean result = instance.isOK();
+        boolean result = instance.okayStatus();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");

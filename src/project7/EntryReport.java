@@ -1,5 +1,4 @@
 /*
-*
 * Project 7: Inventory Management
 * Caleb Davenport & Roan Martin-Hayden
 * EECS 1510-091: Dr. Ledgard
@@ -7,6 +6,11 @@
 * Description: Class to convey information about a potential entry. Contians
 * information about the attempted entry, validation errors, and duplicates are
 * contained.
+*
+* @(1.0)Inventory.java 1.0 4/30/2016 [Roan Martin-Hayden,
+* Caleb Davenport]
+*
+* Copyright (c) 2016 Roan Martin-Hayden, Caleb Davenport. All Rights Reserved
 */
 
 package project7;
@@ -68,7 +72,7 @@ public class EntryReport {
      * Return checked entry object.
      * @return Entry Object
      */
-    public Entry getATTEMPTED_ENTRY() {
+    public Entry attemptedEntry() {
         return ATTEMPTED_ENTRY;
     }
 
@@ -76,7 +80,7 @@ public class EntryReport {
      * Returns list of Entry objects whose name matches.
      * @return List of name matches
      */
-    public ObservableList<Entry> getNAME_MATCHES() {
+    public ObservableList<Entry> matchesByName() {
         return NAME_MATCHES;
     }
 
@@ -84,7 +88,7 @@ public class EntryReport {
      * Returns list of Entry objects whom match entirely.
      * @return list of whole matches
      */
-    public ObservableList<Entry> getWHOLE_MATCHES() {
+    public ObservableList<Entry> matchesInWhole() {
         return WHOLE_MATCHES;
     }
 
@@ -92,7 +96,7 @@ public class EntryReport {
      * Returns error message about the name of attempted Entry.
      * @return Error message
      */
-    public String getNAME_ERROR_MSG() {
+    public String nameErrorMessage() {
         return NAME_ERROR_MSG;
     }
 
@@ -100,7 +104,7 @@ public class EntryReport {
      * Returns Error message about the number of attemptedEntry.
      * @return Error message
      */
-    public String getNUMBER_ERROR_MSG() {
+    public String numberErrorMessage() {
         return NUMBER_ERROR_MSG;
     }
 
@@ -108,7 +112,7 @@ public class EntryReport {
      * Returns if there is a validation error.
      * @return Validation error flag (true = error)
      */
-    public boolean isERROR_FLAG() {
+    public boolean errorFlag() {
         return ERROR_FLAG;
     }
 
@@ -116,7 +120,7 @@ public class EntryReport {
      * Returns if there were any name matches.
      * @return Name matches flag (true = matches)
      */
-    public boolean isNAME_MATCHES_FLAG() {
+    public boolean nameMatchesFlag() {
         return NAME_MATCHES_FLAG;
     }
 
@@ -124,7 +128,7 @@ public class EntryReport {
      * Returns if there were any whole matches.
      * @return Whole matches flag (true = matches)
      */
-    public boolean isWHOLE_MATCHES_FLAG() {
+    public boolean wholeMatchesFlag() {
         return WHOLE_MATCHES_FLAG;
     }
     
@@ -132,7 +136,7 @@ public class EntryReport {
      * Returns if there were any matches of any type.
      * @return Any matches flag (true = matches)
      */
-    public boolean isAnyMatches() {
+    public boolean anyMatches() {
         return NAME_MATCHES_FLAG || WHOLE_MATCHES_FLAG;
     }
     
@@ -140,7 +144,7 @@ public class EntryReport {
      * Returns whether entry checks out entirely.
      * @return true = all clear
      */
-    public boolean isOK() {
+    public boolean okayStatus() {
         return !(NAME_MATCHES_FLAG || WHOLE_MATCHES_FLAG || ERROR_FLAG);
     }
 }

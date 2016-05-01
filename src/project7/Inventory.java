@@ -7,11 +7,10 @@
 * Main class that handles user input
 * and provides the functions based on the input.
 *
-* @(1.0)InventoryManagement.java 1.0 4/30/2016 [Roan Martin-Hayden,
+* @(1.0)Inventory.java 1.0 4/30/2016 [Roan Martin-Hayden,
 * Caleb Davenport]
 *
 * Copyright (c) 2016 Roan Martin-Hayden, Caleb Davenport. All Rights Reserved
-*
 */
 
 package project7;
@@ -27,7 +26,7 @@ import java.util.Scanner;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class InventoryManagement {
+public class Inventory {
     private static final ArrayList<Entry> ENTRY_LIST = new ArrayList<>();
     private static String filterCriterion = "Name";
 
@@ -42,7 +41,7 @@ public class InventoryManagement {
         location = -1;
         // Search Algorithm
         for (int i = 0; i < ENTRY_LIST.size(); ++i) {
-            if (customEquals(name, ENTRY_LIST.get(i).getName())) {
+            if (customEquals(name, ENTRY_LIST.get(i).name())) {
                 location = i;
             }
         }
@@ -62,7 +61,7 @@ public class InventoryManagement {
      * TODO: Force add/Overwrite entry mechanic
      * TODO: Better Entry Overwrite
      */
-    public static EntryReport checkAddEntry(String name, String number,
+    public static EntryReport addEntryReport(String name, String number,
                                        String notes) {
         Entry attemptedEntry;
         ObservableList<Entry> matchesByName;
@@ -73,7 +72,7 @@ public class InventoryManagement {
         // Find Name Matches
         matchesByName = FXCollections.observableArrayList();
         for (Entry e : ENTRY_LIST) {
-            if (customEquals(e.getName(), name)) { 
+            if (customEquals(e.name(), name)) { 
                 matchesByName.add(e);
             }
         }
@@ -81,15 +80,15 @@ public class InventoryManagement {
         // Find whole Matches
         matchesInWhole = FXCollections.observableArrayList();
         for (Entry e : ENTRY_LIST) {
-            if (customEquals(e.getName(), name) &&
-                customEquals(e.getNumber(), number) &&
-                customEquals(e.getNotes(), notes)) matchesInWhole.add(e);
+            if (customEquals(e.name(), name) &&
+                customEquals(e.number(), number) &&
+                customEquals(e.notes(), notes)) matchesInWhole.add(e);
         }
                 
         
         // Name based Error Message creation
-        nameErrorMessage = checkNameValidity(name);
-        numberErrorMessage = checkNumberValidty(number);
+        nameErrorMessage = nameValidityError(name);
+        numberErrorMessage = numberValidityError(number);
 
         attemptedEntry = new Entry(name, number, notes);
         
@@ -129,44 +128,30 @@ public class InventoryManagement {
      * Finds entry by name and deletes it.
      * 
      * @param name name of entry to delete
-     * @return Error message if occurred
      */
-    public static String deleteEntry(String name) {
+    public static void deleteEntry(String name) {
         int index;
         
         index = entryIndex(name);
-        if (index == -1) return "Entry not found.";
-        else return deleteEntry(index);
+        deleteEntry(index);
     }
 
     /**
      * Deletes entry at the given index.
      * 
      * @param index location of entry to delete
-     * @return Error message if occurred
      */
-    public static String deleteEntry(int index) {
-        if (index > 0 && index < ENTRY_LIST.size()) {
+    public static void deleteEntry(int index) {
             ENTRY_LIST.remove(index);
-            return "";
-        } else {
-            return "Index out of range.";
-        }
     }
     
     /**
      * Deletes entry as specified by the object itself
      * 
      * @param entry Object to delete
-     * @return Error message if occurred
      */
-    public static String deleteEntry(Entry entry) {
-        String errMessage;
-        
-        errMessage = "";
+    public static void deleteEntry(Entry entry) {
         ENTRY_LIST.remove(entry);
-        
-        return errMessage;
     }
     
     /**
@@ -218,8 +203,8 @@ public class InventoryManagement {
         try {
             invOut = new PrintStream(pathStr);
             for (Entry entryOut : ENTRY_LIST) {
-                invOut.printf("%s\t%s\t%s\n", entryOut.getName(),
-                                  entryOut.getNumber(), entryOut.getNotes());
+                invOut.printf("%s\t%s\t%s\n", entryOut.name(),
+                                  entryOut.number(), entryOut.notes());
             }
             invOut.close();
         } catch (FileNotFoundException ex) {
@@ -232,15 +217,9 @@ public class InventoryManagement {
     
     /**
      * Clears entire Inventory (for new list)
-     * 
-     * @return errors, if found.
      */
-    public static String clearInventory() {
-        String errMessage;
-        
+    public static void clearInventory() {
         ENTRY_LIST.clear();
-        errMessage = "";
-        return errMessage;
     }
     
     /**
@@ -249,7 +228,7 @@ public class InventoryManagement {
      * @param name Name to be tested
      * @return Highest priority error message, empty if OK
      */
-    public static String checkNameValidity(String name) {
+    public static String nameValidityError(String name) {
         String errMessage;
         
         errMessage = "";
@@ -271,7 +250,7 @@ public class InventoryManagement {
      * @param number Number to be tested
      * @return Highest priority error message, empty if OK
      */
-    public static String checkNumberValidty(String number) {
+    public static String numberValidityError(String number) {
         String errMessage;
         
         errMessage = "";
@@ -343,7 +322,7 @@ public class InventoryManagement {
         entrycomparator = new Comparator<Entry>() {
             @Override
             public int compare(Entry e1, Entry e2) {
-                return e1.getName().compareToIgnoreCase(e2.getName());
+                return e1.name().compareToIgnoreCase(e2.name());
             }
         };
         
@@ -363,11 +342,11 @@ public class InventoryManagement {
         filtList = FXCollections.observableArrayList();
         if ("Notes".equals(filterCriterion)) {
             for (Entry e : ENTRY_LIST) {
-                if (customContains(e.getNotes(), filtStr)) filtList.add(e);
+                if (customContains(e.notes(), filtStr)) filtList.add(e);
             }
         } else {
             for (Entry e : ENTRY_LIST) {
-                if (customContains(e.getName(), filtStr)) filtList.add(e);
+                if (customContains(e.name(), filtStr)) filtList.add(e);
             }
         }
         
@@ -378,7 +357,7 @@ public class InventoryManagement {
      * Get the field that the filter will use
      * @return field that the filter will use
      */
-    public static String getFilterCriterion() {
+    public static String filterCriterion() {
         return filterCriterion;
     }
     
@@ -387,13 +366,6 @@ public class InventoryManagement {
      * @param filterCriterion field that the filter will use
      */
     public static void setFilterCriterion(String filterCriterion) {
-        InventoryManagement.filterCriterion = filterCriterion;
+        Inventory.filterCriterion = filterCriterion;
     }
-    
-    /**
-     * Gets the last loaded path
-     * 
-     * @return Last loaded path
-     */
-    public static String getInvLoc() { return invLocation; }
 }

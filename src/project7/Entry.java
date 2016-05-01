@@ -1,5 +1,4 @@
 /*
-*
 * Project 7: Inventory Management
 * Caleb Davenport & Roan Martin-Hayden
 * EECS 1510-091: Dr. Ledgard
@@ -9,39 +8,62 @@
 * via individual parameters or parsing the individual lines
 * The data is then exported via public functions.
 *
+* @(1.0)Inventory.java 1.0 4/30/2016 [Roan Martin-Hayden,
+* Caleb Davenport]
+*
+* Copyright (c) 2016 Roan Martin-Hayden, Caleb Davenport. All Rights Reserved
 */
 
 package project7;
 
 import javafx.beans.property.SimpleStringProperty;
 
+/**
+ * Holds the data of a single entry.
+ * @author rmartin-
+ */
 public class Entry {
-    private SimpleStringProperty name, number, notes;
-    private boolean exists;
+    private SimpleStringProperty name;
+    private SimpleStringProperty number;
+    private SimpleStringProperty notes;
+    
+    /**
+     * Constructor of empty class.
+     */
     Entry() {
-        clear();
+        this.name = new SimpleStringProperty("");
+        this.number = new SimpleStringProperty("");
+        this.notes = new SimpleStringProperty("");
+
     }
+    
+    /**
+     * Full constructor of class.
+     * @param name Name of entry
+     * @param number Number of entry
+     * @param notes Notes of entry
+     */
     Entry(String name, String number, String notes) {
         this.name = new SimpleStringProperty(name);
         this.number = new SimpleStringProperty(number);
         this.notes = new SimpleStringProperty(notes);
-        exists = true;
     }
-    private void clear() {
-        this.name = new SimpleStringProperty("");
-        this.number = new SimpleStringProperty("");
-        this.notes = new SimpleStringProperty("");
-        exists = false;
-    }
-    public String getName() { return name.get(); }
-    public String getNumber() { return number.get(); }
-    public String getNotes() { return notes.get(); }
-    public boolean exists() { return exists; }
-
-    @Override
-    public String toString() {
-        String s;
-        s = name + "\t" + number + "\t" + notes;
-        return s;
-    }
+    
+    /**
+     * Returns name of entry.
+     * @return name of entry
+     */
+    public String name() { return name.get(); }
+    
+    /**
+     * Returns number of entry.
+     * @return number of entry object
+     */
+    public String number() { return number.get(); }
+    
+    /**
+     * Returns notes of entry.
+     * @return notes of entry object
+     */
+    public String notes() { return notes.get(); }
 }

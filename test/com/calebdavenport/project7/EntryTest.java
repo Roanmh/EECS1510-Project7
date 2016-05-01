@@ -39,42 +39,42 @@ public class EntryTest {
     }
 
     /**
-     * Test of getName method, of class Entry.
+     * Test of name method, of class Entry.
      */
     @Test
     public void testGetName() {
         System.out.println("getName");
         Entry instance = new Entry();
         String expResult = "";
-        String result = instance.getName();
+        String result = instance.name();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
 
     /**
-     * Test of getNumber method, of class Entry.
+     * Test of number method, of class Entry.
      */
     @Test
     public void testGetNumber() {
         System.out.println("getNumber");
         Entry instance = new Entry();
         String expResult = "";
-        String result = instance.getNumber();
+        String result = instance.number();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
 
     /**
-     * Test of getNotes method, of class Entry.
+     * Test of notes method, of class Entry.
      */
     @Test
     public void testGetNotes() {
         System.out.println("getNotes");
         Entry instance = new Entry();
         String expResult = "";
-        String result = instance.getNotes();
+        String result = instance.notes();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
