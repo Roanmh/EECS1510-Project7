@@ -22,9 +22,9 @@ import javafx.beans.property.SimpleStringProperty;
  * @author rmartin-
  */
 public class Entry {
-    private SimpleStringProperty name;
-    private SimpleStringProperty number;
-    private SimpleStringProperty notes;
+    private final SimpleStringProperty name;
+    private final SimpleStringProperty number;
+    private final SimpleStringProperty notes;
     
     /**
      * Constructor of empty class.
