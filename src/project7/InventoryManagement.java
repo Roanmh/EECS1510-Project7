@@ -15,8 +15,13 @@ package project7;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
-import java.util.*;
-import javafx.collections.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Scanner;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 public class InventoryManagement {
     private static String invLocation = "";
@@ -32,13 +37,7 @@ public class InventoryManagement {
      */
     public static int findEntry(String name) {
         int location;
-        
-        //Normalize String
-        
-        
-        // Not fuund value
         location = -1;
-        
         // Search Algorithm
         for (int i = 0; i < ENTRY_LIST.size(); ++i) {
             if (customEquals(name, ENTRY_LIST.get(i).getName())) {
@@ -128,9 +127,6 @@ public class InventoryManagement {
         index = findEntry(name);
         if (index == -1) return "Entry not found.";
         else return deleteEntry(index);
-        
-        // Could ha done this
-//        return (findEntry(name) == -1) ? "blargh" : deleteEntry(findEntry(name));
     }
 
     /**
@@ -219,8 +215,8 @@ public class InventoryManagement {
             }
             invOut.close();
         } catch (FileNotFoundException ex) {
-//            errMessage = "File not found.";
-            System.out.println(ex.getMessage());
+            errMessage = "File not found.";
+            System.err.println(ex.getMessage());
         }
         
         return errMessage;
