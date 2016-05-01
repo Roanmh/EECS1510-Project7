@@ -15,10 +15,10 @@
 */
 package project7;
 
+import com.jfoenix.controls.JFXTreeTableColumn;
 import com.jfoenix.controls.JFXTreeTableView;
+import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
-import java.io.File;
-import java.util.Optional;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -28,21 +28,8 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
+import javafx.scene.control.*;
 import javafx.scene.control.ButtonBar.ButtonData;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -58,13 +45,16 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import java.io.File;
+import java.util.Optional;
+
 public class InventoryManagementGUI extends Application {
 
-    private static final JFXTreeTableView<Entry> TABLE = new JFXTreeTableView<>();
-    private static final MenuBar MENU_BAR = new MenuBar();
-    private static final HBox BOTTOM_BOX = new HBox();
-    private static final VBox RIGHT_BOX = new VBox();
-    private static final BorderPane ROOT = new BorderPane();
+    private static JFXTreeTableView<Entry> table;
+    private static MenuBar menuBar;
+    private static HBox bottomBox;
+    private static VBox rightBox;
+    private static BorderPane root;
     private static String filteredText = "";
     private static Stage primaryStage = null;
     private static EntryReport lastReport = new EntryReport();
@@ -75,6 +65,13 @@ public class InventoryManagementGUI extends Application {
      */
     @Override
     public void start(Stage primaryStage) {
+        // JFX Class Variable Initializations
+        table = new JFXTreeTableView<>();
+        menuBar = new MenuBar();
+        bottomBox = new HBox();
+        rightBox = new VBox();
+        root = new BorderPane();
+
         InventoryManagementGUI.primaryStage = primaryStage;
         Scene scene;
 
@@ -83,14 +80,14 @@ public class InventoryManagementGUI extends Application {
         setupSidePanel();
         setupMargins();
 
-        BorderPane.setMargin(TABLE, new Insets(0, 10, 0, 10));
-        BorderPane.setMargin(MENU_BAR, new Insets(0, 0, 10, 0));
-        ROOT.setTop(MENU_BAR);
-        ROOT.setCenter(TABLE);
-        ROOT.setRight(RIGHT_BOX);
-        ROOT.setBottom(BOTTOM_BOX);
+        BorderPane.setMargin(table, new Insets(0, 10, 0, 10));
+        BorderPane.setMargin(menuBar, new Insets(0, 0, 10, 0));
+        root.setTop(menuBar);
+        root.setCenter(table);
+        root.setRight(rightBox);
+        root.setBottom(bottomBox);
 
-        scene = new Scene(ROOT, 800, 400);
+        scene = new Scene(root, 800, 400);
         
         InventoryManagementGUI.primaryStage.setTitle("Inventory Management");
         InventoryManagementGUI.primaryStage.setScene(scene);
@@ -164,37 +161,55 @@ public class InventoryManagementGUI extends Application {
         });
         menuHelp.getItems().addAll(menuItemAbout);
 
-        MENU_BAR.getMenus().addAll(menuFile, menuEdit, menuHelp);
+        menuBar.getMenus().addAll(menuFile, menuEdit, menuHelp);
     }
 
     /**
      * Updates the table with the current list of entries
      */
     private void updateTable() {
-        TreeTableColumn nameCol;
-        TreeTableColumn numberCol;
-        TreeTableColumn notesCol;
+        JFXTreeTableColumn<Entry, String> nameCol;
+        JFXTreeTableColumn<Entry, String> numberCol;
+        JFXTreeTableColumn<Entry, String> notesCol;
         
-        TABLE.getColumns().clear();
-        nameCol = new TreeTableColumn("Name");
-        nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-        numberCol = new TreeTableColumn("#");
-        numberCol.setCellValueFactory(new PropertyValueFactory<>("number"));
-        notesCol = new TreeTableColumn("Notes");
-        notesCol.setCellValueFactory(new PropertyValueFactory<>("notes"));
+        table.getColumns().clear();
+
+        nameCol = new JFXTreeTableColumn<>("Name");
+        nameCol.setPrefWidth(150);
+        nameCol.setCellValueFactory(p -> {
+            // p.getValue() returns the Person instance for a particular TableView row
+            return p.getValue().getValue().nameProperty();
+        });
+
+        numberCol = new JFXTreeTableColumn<>("#");
+        numberCol.setPrefWidth(150);
+        numberCol.setCellValueFactory(p -> {
+            // p.getValue() returns the Person instance for a particular TableView row
+            return p.getValue().getValue().numberProperty();
+        });
+
+        notesCol = new JFXTreeTableColumn<>("Notes");
+        notesCol.setPrefWidth(150);
+        notesCol.setCellValueFactory(p -> {
+            // p.getValue() returns the Person instance for a particular TableView row
+            return p.getValue().getValue().notesProperty();
+        });
 
         nameCol.minWidthProperty().set(80);
-        nameCol.prefWidthProperty().bind(TABLE.widthProperty()
+        nameCol.prefWidthProperty().bind(table.widthProperty()
                 .multiply(0.1));
         numberCol.prefWidthProperty().bind(nameCol.widthProperty()
                 .multiply(0.5));
-        notesCol.prefWidthProperty().bind(TABLE.widthProperty()
+        notesCol.prefWidthProperty().bind(table.widthProperty()
                 .subtract(nameCol.widthProperty().multiply(1.5))
                 .subtract(2));
 
-        TABLE.setItems(Inventory.filteredEntries(filteredText));
-        TABLE.getColumns().addAll(nameCol, numberCol, notesCol);
-        TABLE.setPlaceholder(new Label("No entries found"));
+        final TreeItem<Entry> rootItem = new RecursiveTreeItem<Entry>(Inventory.filteredEntries(filteredText),
+                RecursiveTreeObject::getChildren);
+        table.setRoot(rootItem);
+        table.setShowRoot(false);
+        table.getColumns().addAll(nameCol, numberCol, notesCol);
+        table.setPlaceholder(new Label("No entries found"));
     }
 
     /**
@@ -229,8 +244,8 @@ public class InventoryManagementGUI extends Application {
         buttonEditEntry.setGraphic(new ImageView(imgEdit));
         buttonDeleteEntry.setGraphic(new ImageView(imgDel));
 
-        RIGHT_BOX.setSpacing(5);
-        RIGHT_BOX.getChildren().addAll(buttonAddEntry, buttonEditEntry,
+        rightBox.setSpacing(5);
+        rightBox.getChildren().addAll(buttonAddEntry, buttonEditEntry,
                                        buttonDeleteEntry);
     }
 
@@ -242,7 +257,7 @@ public class InventoryManagementGUI extends Application {
         ComboBox comboBox = new ComboBox();
         
         textFieldFilter.setPromptText("Filter");
-        textFieldFilter.prefWidthProperty().bind(TABLE.widthProperty());
+        textFieldFilter.prefWidthProperty().bind(table.widthProperty());
         textFieldFilter.setOnKeyReleased((KeyEvent e) -> {
             handleFilter(textFieldFilter.getText());
         });
@@ -258,18 +273,18 @@ public class InventoryManagementGUI extends Application {
             }
         });
 
-        BOTTOM_BOX.setSpacing(5);
-        BOTTOM_BOX.getChildren().addAll(textFieldFilter, comboBox);
+        bottomBox.setSpacing(5);
+        bottomBox.getChildren().addAll(textFieldFilter, comboBox);
     }
 
     /**
      * Sets up the margins between all the elements in the BorderPane
      */
     private void setupMargins() {
-        BorderPane.setMargin(TABLE, new Insets(0, 10, 10, 0));
-        BorderPane.setMargin(MENU_BAR, new Insets(0, 0, 10, 0));
-        BorderPane.setMargin(RIGHT_BOX, new Insets(0, 10, 0, 0));
-        BorderPane.setMargin(BOTTOM_BOX, new Insets(5, 10, 5, 10));
+        BorderPane.setMargin(table, new Insets(0, 10, 10, 0));
+        BorderPane.setMargin(menuBar, new Insets(0, 0, 10, 0));
+        BorderPane.setMargin(rightBox, new Insets(0, 10, 0, 0));
+        BorderPane.setMargin(bottomBox, new Insets(5, 10, 5, 10));
     }
 
     /**
@@ -290,8 +305,8 @@ public class InventoryManagementGUI extends Application {
      * Handles deleting an entry
      */
     private void handleDeleteEntry() {
-        Inventory.deleteEntry(TABLE.getSelectionModel().
-                getSelectedItem());
+        Inventory.deleteEntry(table.getSelectionModel().
+                getSelectedItem().getValue());
         updateTable();
     }
 
@@ -494,7 +509,7 @@ public class InventoryManagementGUI extends Application {
         notes.setPromptText("Notes");
 
         if (isEdit) {
-            editableEntry = TABLE.getSelectionModel().getSelectedItem();
+            editableEntry = table.getSelectionModel().getSelectedItem().getValue();
             name.setText(editableEntry.name());
             number.setText(editableEntry.number());
             notes.setText(editableEntry.notes());
