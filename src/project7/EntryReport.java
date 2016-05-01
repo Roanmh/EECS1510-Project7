@@ -1,3 +1,16 @@
+/*
+*
+* Project 7: Inventory Management
+* Caleb Davenport & Roan Martin-Hayden
+* EECS 1510-091: Dr. Ledgard
+*
+* Description:
+* 
+* 
+* 
+*
+*/
+
 package project7;
 
 import javafx.collections.FXCollections;

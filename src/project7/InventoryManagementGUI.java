@@ -34,7 +34,6 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javax.xml.ws.Response;
 
 public class InventoryManagementGUI extends Application {
     private static final TableView<Entry> TABLE = new TableView<>();
@@ -62,7 +61,6 @@ public class InventoryManagementGUI extends Application {
         setupSidePanel();
         setupMargins();
         
-        //table.setPadding(new Insets(10));
         BorderPane.setMargin(TABLE, new Insets(0, 10, 0, 10));
         BorderPane.setMargin(MENU_BAR, new Insets(0, 0, 10, 0));
         ROOT.setTop(MENU_BAR);
@@ -116,12 +114,12 @@ public class InventoryManagementGUI extends Application {
         {
             MenuItem addEntry = new MenuItem("Add Entry");
             addEntry.setOnAction((ActionEvent e) -> {
-                entryDialogHandler(false);
+                addEntryHandler();
             });
 
             MenuItem editEntry = new MenuItem("Edit Entry");
             editEntry.setOnAction((ActionEvent e) -> {
-                entryDialogHandler(true);
+                editEntryHandler();
             });
 
             MenuItem deleteEntry = new MenuItem("Delete Entry");
@@ -153,14 +151,22 @@ public class InventoryManagementGUI extends Application {
         TABLE.getColumns().clear();
         TableColumn nameCol = new TableColumn("Name");
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-        TableColumn<Entry, String> numberCol = new TableColumn("#");
+        TableColumn numberCol = new TableColumn("#");
         numberCol.setCellValueFactory(new PropertyValueFactory<>("number"));
         TableColumn notesCol = new TableColumn("Notes");
         notesCol.setCellValueFactory(new PropertyValueFactory<>("notes"));
         
-        nameCol.prefWidthProperty().bind(TABLE.widthProperty().multiply(0.1));
-        numberCol.prefWidthProperty().bind(TABLE.widthProperty().multiply(0.05));
-        notesCol.prefWidthProperty().bind(TABLE.widthProperty().multiply(0.85));
+        nameCol.prefWidthProperty().bind(TABLE.widthProperty()
+                .multiply(0.1));
+        nameCol.minWidthProperty().set(80);
+
+        numberCol.prefWidthProperty().bind(nameCol.widthProperty()
+                .multiply(0.5));
+
+        notesCol.prefWidthProperty().bind(TABLE.widthProperty()
+                .subtract(nameCol.widthProperty().multiply(1.5))
+                .subtract(2));
+        
         TABLE.setItems(InventoryManagement.filteredEntries(filterText));
         TABLE.getColumns().addAll(nameCol, numberCol, notesCol);
         TABLE.setPlaceholder(new Label("No entries found"));
@@ -172,12 +178,12 @@ public class InventoryManagementGUI extends Application {
     private void setupSidePanel() {
         Button addEntry = new Button("Add");
         addEntry.setOnAction((ActionEvent e) -> {
-            entryDialogHandler(false);
+            addEntryHandler();
         });
 
         Button editEntry = new Button("Edit");
         editEntry.setOnAction((ActionEvent e) -> {
-            entryDialogHandler(true);
+            editEntryHandler();
         });
 
         Button deleteEntry = new Button("Delete");
@@ -185,9 +191,9 @@ public class InventoryManagementGUI extends Application {
             deleteEntryHandler();
         });
         
-        addEntry.setMaxWidth(Double.MAX_VALUE);
-        editEntry.setMaxWidth(Double.MAX_VALUE);
-        deleteEntry.setMaxWidth(Double.MAX_VALUE);
+        addEntry.maxWidthProperty().set(Double.MAX_VALUE);
+        editEntry.maxWidthProperty().set(Double.MAX_VALUE);
+        deleteEntry.maxWidthProperty().set(Double.MAX_VALUE);
         
         Image imgAdd = new Image("file:img/green_plus.png", 16, 16, true, false);
         addEntry.setGraphic(new ImageView(imgAdd));
@@ -225,7 +231,7 @@ public class InventoryManagementGUI extends Application {
             }
         });
         
-        BOTTOM_BOX.setSpacing(10);
+        BOTTOM_BOX.setSpacing(5);
         BOTTOM_BOX.getChildren().addAll(filter, criteria);
     }
     
@@ -243,121 +249,14 @@ public class InventoryManagementGUI extends Application {
      * 
      */
     private void addEntryHandler() {
-        EntryReport report;
-        
-        Dialog dialog = new Dialog();
-        dialog.setTitle("Add Entry");
-        dialog.setHeaderText("Add Entry");
-        ButtonType loginButtonType = new ButtonType("Add", ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType,
-                                                       ButtonType.CANCEL);
-
-        GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(20, 150, 10, 10));
-
-        TextField name = new TextField();
-        name.setPromptText("Name");
-        TextField number = new TextField();
-        number.setPromptText("Quantity");
-        TextField notes = new TextField();
-        notes.setPromptText("Notes");
-
-        grid.add(new Label("Name:"), 0, 0);
-        grid.add(name, 1, 0);
-        grid.add(new Label("Quantity:"), 0, 1);
-        grid.add(number, 1, 1);
-        grid.add(new Label("Notes:"), 0, 2);
-        grid.add(notes, 1, 2);
-        
-        // Error Notifications
-        Label errText1 = new Label("");
-        errText1.setTextFill(Color.web("#F00"));
-        Label errText2 = new Label("");
-        errText2.setTextFill(Color.web("#F00"));
-        Label errText3 = new Label("");
-        errText3.setTextFill(Color.web("#F00"));
-        
-        grid.add(errText1, 2, 0);
-        grid.add(errText2, 2, 1);
-        grid.add(errText3, 2, 2);
-
-        dialog.getDialogPane().setContent(grid);
-        Platform.runLater(() -> name.requestFocus());
-        
-        Optional<ButtonType> result;
-        boolean isRetry = true;
-        while (isRetry) {
-            errText1.setText(lastReport.getNAME_ERROR_MSG());
-            errText2.setText(lastReport.getNUMBER_ERROR_MSG());
-            result = dialog.showAndWait();
-            if (result.get().getButtonData() == ButtonData.OK_DONE) {
-                lastReport = InventoryManagement.checkAddEntry(name.getText(),
-                                                               number.getText(),
-                                                               number.
-                                                               getText());
-                if (lastReport.isOK()) {
-                    InventoryManagement.addEntry(name.getText(), number.getText(),
-                            notes.getText());
-                    
-                    isRetry = false;
-                }
-            } else {
-                isRetry = false;
-            }
-        }
-        lastReport = new EntryReport();
-        updateTable();
+        entryDialogHandler(false);
     }
     
     /**
      * 
      */
     private void editEntryHandler() {
-        Entry entry;
-        
-        Dialog dialog = new Dialog();
-        dialog.setTitle("Edit Entry");
-        dialog.setHeaderText("Edit Entry");
-        ButtonType loginButtonType = new ButtonType("Edit", ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType,
-                                                       ButtonType.CANCEL);
-
-        GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(20, 150, 10, 10));
-
-        TextField name = new TextField();
-        name.setPromptText("Name");
-        TextField number = new TextField();
-        number.setPromptText("Quantity");
-        TextField notes = new TextField();
-        notes.setPromptText("Notes");
-        
-        entry = TABLE.getSelectionModel().getSelectedItem();
-        name.setText(entry.getName());
-        number.setText(entry.getNumber());
-        notes.setText(entry.getNotes());
-
-        grid.add(new Label("Name:"), 0, 0);
-        grid.add(name, 1, 0);
-        grid.add(new Label("Quantity:"), 0, 1);
-        grid.add(number, 1, 1);
-        grid.add(new Label("Notes:"), 0, 2);
-        grid.add(notes, 1, 2);
-
-        dialog.getDialogPane().setContent(grid);
-        Platform.runLater(() -> name.requestFocus());
-        
-        Optional<ButtonType> result = dialog.showAndWait();
-        if (result.get().getButtonData() == ButtonData.OK_DONE) {
-            InventoryManagement.editEntry(entry, name.getText(),
-                                          number.getText(), notes.getText());
-        }
-        updateTable();
-
+        entryDialogHandler(true);
     }
     
     /**
@@ -482,10 +381,6 @@ public class InventoryManagementGUI extends Application {
         
         duplicatesTable = new TableView<>();
         duplicatesTable.getColumns().clear();
-
-        // TODO: Add Identifier of Type (Requires wrapper class or more info...
-//        TableColumn matchCol = new TableColumn("Match");
-//        matchCol.setCellValueFactory(new PropertyValueFactory<>("match"));
         
         TableColumn nameCol = new TableColumn("Name");
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -514,8 +409,6 @@ public class InventoryManagementGUI extends Application {
     private void entryDialogHandler(boolean isEdit) {
         String actionStr;
         Entry editEntry;
-        
-        EntryReport report;
         
         actionStr = isEdit ? "Edit" : "Add";
         Dialog dialog = new Dialog();
