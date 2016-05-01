@@ -353,8 +353,9 @@ public class InventoryManagementGUI extends Application {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Project 7");
         alert.setHeaderText("Inventory Management");
-        alert.setContentText("Created by Caleb Davenport "
-                + "and Roan Martin-Hayden\n\n"
+        alert.setContentText("Created by:\n\t"
+                             + "Caleb Davenport\t\t(github.com/caleb-davenport)\n\t"
+                + "Roan Martin-Hayden\t(github.com/roanmh)\n\n"
                 + "Spring 2016");
         alert.setGraphic(new ImageView(new Image("file:img/about.png", 100, 100, true, true)));
 
@@ -472,7 +473,7 @@ public class InventoryManagementGUI extends Application {
             if (entryResult.get().getButtonData() == ButtonData.OK_DONE) {
                 lastReport = InventoryManagement.checkAddEntry(name.getText(),
                                                                number.getText(),
-                                                               number.
+                                                               notes.
                                                                getText());
                 if (lastReport.isOK()) {
                     if (isEdit) {
@@ -492,9 +493,9 @@ public class InventoryManagementGUI extends Application {
                         confirmResult = duplicateDialogHandler(lastReport.
                                 getNAME_MATCHES(),
                                 lastReport.getWHOLE_MATCHES());
-                        if (null != confirmResult.get().getButtonData())
-                            switch (confirmResult.get().getButtonData()) {
-                            case YES:
+                        if (null != confirmResult.get().getText())
+                            switch (confirmResult.get().getText()) {
+                            case "Continue":
                                 if (isEdit) {
                                     InventoryManagement.editEntry(editEntry,
                                             name.getText(), number.getText(),
@@ -506,9 +507,9 @@ public class InventoryManagementGUI extends Application {
                                 }
                                 isRetry = false;
                                 break;
-                            case BACK_PREVIOUS:
+                            case "Edit":
                                 break;
-                            case CANCEL_CLOSE:
+                            case "Cancel":
                                 isRetry = false;
                                 break;
                             default:

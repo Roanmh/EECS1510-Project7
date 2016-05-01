@@ -1,5 +1,4 @@
 /*
-*
 * Project 7: Inventory Management
 * Caleb Davenport & Roan Martin-Hayden
 * EECS 1510-091: Dr. Ledgard
@@ -8,6 +7,11 @@
 * Main class that handles user input
 * and provides the functions based on the input.
 *
+* @(1.0)InventoryManagement.java 1.0 4/30/2016 [Roan Martin-Hayden,
+* Caleb Davenport]
+*
+* Copyright (c) 2016 Roan Martin-Hayden, Caleb Davenport. All Rights Reserved
+*
 */
 
 package project7;
@@ -15,14 +19,17 @@ package project7;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
-import java.util.*;
-import javafx.collections.*;
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 public class InventoryManagement {
-    private static String invLocation = "";
     private static final ArrayList<Entry> ENTRY_LIST = new ArrayList<>();
     private static String filterCriterion = "Name";
-    public static enum forceBehavior { ORIGINAL, NEW };
 
     /**
      * Finds an entry and returns the location or -1 if not found
@@ -30,7 +37,7 @@ public class InventoryManagement {
      * @param name Name to search for
      * @return Index location of the entry or -1 if not found
      */
-    public static int findEntry(String name) {
+    public static int entryIndex(String name) {
         int location;
         
         //Normalize String
@@ -64,25 +71,25 @@ public class InventoryManagement {
     public static EntryReport checkAddEntry(String name, String number,
                                        String notes) {
         Entry attemptedEntry;
-        ObservableList<Entry> nameMatches;
-        ObservableList<Entry> wholeMatches;
+        ObservableList<Entry> matchesByName;
+        ObservableList<Entry> matchesInWhole;
         String nameErrorMessage;
         String numberErrorMessage;
     
         // Find Name Matches
-        nameMatches = FXCollections.observableArrayList();
+        matchesByName = FXCollections.observableArrayList();
         for (Entry e : ENTRY_LIST) {
             if (customEquals(e.getName(), name)) { 
-                nameMatches.add(e);
+                matchesByName.add(e);
             }
         }
                 
         // Find whole Matches
-        wholeMatches = FXCollections.observableArrayList();
+        matchesInWhole = FXCollections.observableArrayList();
         for (Entry e : ENTRY_LIST) {
             if (customEquals(e.getName(), name) &&
                 customEquals(e.getNumber(), number) &&
-                customEquals(e.getNotes(), notes)) wholeMatches.add(e);
+                customEquals(e.getNotes(), notes)) matchesInWhole.add(e);
         }
                 
         
@@ -92,7 +99,7 @@ public class InventoryManagement {
 
         attemptedEntry = new Entry(name, number, notes);
         
-        return new EntryReport(attemptedEntry, nameMatches, wholeMatches,
+        return new EntryReport(attemptedEntry, matchesByName, matchesInWhole,
                 nameErrorMessage, numberErrorMessage);
     }
     
@@ -109,6 +116,14 @@ public class InventoryManagement {
         customSort(ENTRY_LIST);
     }
     
+    /**
+     * Edits an entry, essential replacing the old entry with entered
+     * information.
+     * @param replacedEntry Entry object of the entry to be replaced
+     * @param name Name be entered
+     * @param number Number to be entered
+     * @param notes Notes to be entered
+     */
     public static void editEntry(Entry replacedEntry, String name,
                                   String number, String notes) {
         addEntry(name, number, notes);
@@ -125,12 +140,12 @@ public class InventoryManagement {
     public static String deleteEntry(String name) {
         int index;
         
-        index = findEntry(name);
+        index = entryIndex(name);
         if (index == -1) return "Entry not found.";
         else return deleteEntry(index);
         
         // Could ha done this
-//        return (findEntry(name) == -1) ? "blargh" : deleteEntry(findEntry(name));
+//        return (entryIndex(name) == -1) ? "blargh" : deleteEntry(entryIndex(name));
     }
 
     /**
@@ -148,7 +163,7 @@ public class InventoryManagement {
         }
     }
     
-        /**
+    /**
      * Deletes entry as specified by the object itself
      * 
      * @param entry Object to delete
