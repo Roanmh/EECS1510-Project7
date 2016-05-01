@@ -55,7 +55,7 @@ public class Inventory {
      * @return Highest priority error if encountered, empty if success
      */
     public static EntryReport addEntryReport(String name, String number,
-                                       String notes) {
+                                             String notes) {
         Entry attemptedEntry;
         ObservableList<Entry> matchesByName;
         ObservableList<Entry> matchesInWhole;
@@ -75,7 +75,10 @@ public class Inventory {
         for (Entry entry : ENTRY_LIST) {
             if (customEquals(entry.name(), name) &&
                 customEquals(entry.number(), number) &&
-                customEquals(entry.notes(), notes)) matchesInWhole.add(entry);
+                customEquals(entry.notes(), notes)) {
+                
+                matchesInWhole.add(entry);
+            }
         }
                 
         
@@ -86,7 +89,7 @@ public class Inventory {
         attemptedEntry = new Entry(name, number, notes);
         
         return new EntryReport(attemptedEntry, matchesByName, matchesInWhole,
-                nameErrorMessage, numberErrorMessage);
+                               nameErrorMessage, numberErrorMessage);
     }
     
     /**
@@ -110,7 +113,7 @@ public class Inventory {
      * @param notes Notes to be entered
      */
     public static void editEntry(Entry replacedEntry, String name,
-                                  String number, String notes) {
+                                 String number, String notes) {
         addEntry(name, number, notes);
         deleteEntry(replacedEntry);
     }

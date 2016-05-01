@@ -55,7 +55,8 @@ public class EntryReport {
      */
     public EntryReport(Entry attemptedEntry, ObservableList<Entry> nameMatches,
                        ObservableList<Entry> wholeMatches,
-                       String nameErrorMessage, String numberErrorMessage) {
+                       String nameErrorMessage,
+                       String numberErrorMessage) {
         this.ATTEMPTED_ENTRY = attemptedEntry;
         this.NAME_MATCHES = nameMatches;
         this.WHOLE_MATCHES = wholeMatches;
