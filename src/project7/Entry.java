@@ -15,13 +15,14 @@
 
 package project7;
 
+import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import javafx.beans.property.SimpleStringProperty;
 
 /**
  * Holds the data of a single entry.
  * @author rmartin-
  */
-public class Entry {
+public class Entry extends RecursiveTreeObject<Entry> {
     private SimpleStringProperty name;
     private SimpleStringProperty number;
     private SimpleStringProperty notes;

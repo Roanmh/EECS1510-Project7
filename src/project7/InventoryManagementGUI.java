@@ -15,6 +15,8 @@
 */
 package project7;
 
+import com.jfoenix.controls.JFXTreeTableView;
+import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import java.io.File;
 import java.util.Optional;
 import javafx.application.Application;
@@ -40,6 +42,7 @@ import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -57,7 +60,7 @@ import javafx.stage.Stage;
 
 public class InventoryManagementGUI extends Application {
 
-    private static final TableView<Entry> TABLE = new TableView<>();
+    private static final JFXTreeTableView<Entry> TABLE = new JFXTreeTableView<>();
     private static final MenuBar MENU_BAR = new MenuBar();
     private static final HBox BOTTOM_BOX = new HBox();
     private static final VBox RIGHT_BOX = new VBox();
@@ -168,16 +171,16 @@ public class InventoryManagementGUI extends Application {
      * Updates the table with the current list of entries
      */
     private void updateTable() {
-        TableColumn nameCol;
-        TableColumn numberCol;
-        TableColumn notesCol;
+        TreeTableColumn nameCol;
+        TreeTableColumn numberCol;
+        TreeTableColumn notesCol;
         
         TABLE.getColumns().clear();
-        nameCol = new TableColumn("Name");
+        nameCol = new TreeTableColumn("Name");
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-        numberCol = new TableColumn("#");
+        numberCol = new TreeTableColumn("#");
         numberCol.setCellValueFactory(new PropertyValueFactory<>("number"));
-        notesCol = new TableColumn("Notes");
+        notesCol = new TreeTableColumn("Notes");
         notesCol.setCellValueFactory(new PropertyValueFactory<>("notes"));
 
         nameCol.minWidthProperty().set(80);
