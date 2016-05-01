@@ -173,18 +173,22 @@ public class InventoryManagement {
         String errMessage;
         File file;
         Scanner invIn;
+        String[] tempVals;
         String[] entryVals;
         
         invLocation = pathStr;
         
         ENTRY_LIST.clear();
         
+        entryVals = new String[3];
+        Arrays.fill(entryVals, "");
         errMessage = "";
         file = new File(pathStr);
         try {
             invIn = new Scanner(file);
             while (invIn.hasNextLine()) {
-                entryVals = invIn.nextLine().split("\t");
+                tempVals = invIn.nextLine().split("\t");
+                System.arraycopy(tempVals, 0, entryVals, 0, tempVals.length);
                 addEntry(entryVals[0], entryVals[1], entryVals[2]);
             }
         } catch (FileNotFoundException ex) {
@@ -210,7 +214,7 @@ public class InventoryManagement {
         try {
             invOut = new PrintStream(pathStr);
             for (Entry entryOut : ENTRY_LIST) {
-                invOut.printf("%s\t%s\t%s", entryOut.getName(),
+                invOut.printf("%s\t%s\t%s\n", entryOut.getName(),
                                   entryOut.getNumber(), entryOut.getNotes());
             }
             invOut.close();
@@ -335,7 +339,7 @@ public class InventoryManagement {
         entrycomparator = new Comparator<Entry>() {
             @Override
             public int compare(Entry e1, Entry e2) {
-                return e1.getName().compareTo(e2.getName());
+                return e1.getName().compareToIgnoreCase(e2.getName());
             }
         };
         

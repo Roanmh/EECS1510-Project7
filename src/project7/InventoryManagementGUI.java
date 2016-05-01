@@ -462,14 +462,6 @@ public class InventoryManagementGUI extends Application {
         alert.showAndWait();
     }
     
-    /**
-     * 
-     * @param args 
-     */
-    public static void main(String[] args) {
-        launch(args);
-    }
-    
     private static Optional<ButtonType> duplicateDialogHandler(
             ObservableList<Entry> nameMatches,
             ObservableList<Entry> wholeMatches) {
@@ -483,9 +475,9 @@ public class InventoryManagementGUI extends Application {
         dialog.setTitle("Duplcates Found");
         dialog.setHeaderText("Duplicates Found");
         
-        ButtonType confirmButton = new ButtonType("Confirm", ButtonData.YES);
-        ButtonType changeButton = new ButtonType("Change", ButtonData.BACK_PREVIOUS);
-        ButtonType cancelButton = new ButtonType("Cancel", ButtonData.SMALL_GAP);
+        ButtonType confirmButton = new ButtonType("Continue", ButtonData.OTHER);
+        ButtonType changeButton = new ButtonType("Edit", ButtonData.OTHER);
+        ButtonType cancelButton = new ButtonType("Cancel", ButtonData.OTHER);
         dialog.getDialogPane().getButtonTypes().addAll(cancelButton, changeButton, confirmButton);
         
         duplicatesTable = new TableView<>();
@@ -509,7 +501,6 @@ public class InventoryManagementGUI extends Application {
         combinedMatches.addAll(nameMatches);
         duplicatesTable.setItems(combinedMatches);
         duplicatesTable.getColumns().addAll(nameCol, numberCol, notesCol);
-        duplicatesTable.setPlaceholder(new Label("No entries found"));
         duplicatesTable.maxHeightProperty().set(120);
         
         borderPane = new BorderPane();
@@ -642,4 +633,13 @@ public class InventoryManagementGUI extends Application {
         lastReport = new EntryReport();
         updateTable();
     }
+    
+    /**
+     * 
+     * @param args 
+     */
+    public static void main(String[] args) {
+        launch(args);
+    }
+    
 }
