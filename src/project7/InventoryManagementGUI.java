@@ -67,7 +67,7 @@ public class InventoryManagementGUI extends Application {
     private static EntryReport lastReport = new EntryReport();
 
     /**
-     *
+     * Initializes the GUI
      * @param primaryStage
      */
     @Override
@@ -96,7 +96,7 @@ public class InventoryManagementGUI extends Application {
     }
 
     /**
-     *
+     * Adds the menus to the menu bar
      */
     private void addMenus() {
         Menu menuFile;
@@ -165,7 +165,7 @@ public class InventoryManagementGUI extends Application {
     }
 
     /**
-     *
+     * Updates the table with the current list of entries
      */
     private void updateTable() {
         TableColumn nameCol;
@@ -195,7 +195,7 @@ public class InventoryManagementGUI extends Application {
     }
 
     /**
-     *
+     * Initializes the panel on the right
      */
     private void setupSidePanel() {
         Button buttonAddEntry = new Button("Add");
@@ -232,7 +232,7 @@ public class InventoryManagementGUI extends Application {
     }
 
     /**
-     *
+     * Initializes the filter on the bottom of the GUI
      */
     private void setupBottomFilter() {
         TextField textFieldFilter = new TextField();
@@ -260,7 +260,7 @@ public class InventoryManagementGUI extends Application {
     }
 
     /**
-     *
+     * Sets up the margins between all the elements in the BorderPane
      */
     private void setupMargins() {
         BorderPane.setMargin(TABLE, new Insets(0, 10, 10, 0));
@@ -270,21 +270,21 @@ public class InventoryManagementGUI extends Application {
     }
 
     /**
-     *
+     * Handles adding an entry
      */
     private void handleAddEntry() {
         handleEntryDialog(false);
     }
 
     /**
-     *
+     * Handles editing an entry
      */
     private void handleEditEntry() {
         handleEntryDialog(true);
     }
 
     /**
-     *
+     * Handles deleting an entry
      */
     private void handleDeleteEntry() {
         Inventory.deleteEntry(TABLE.getSelectionModel().
@@ -293,7 +293,7 @@ public class InventoryManagementGUI extends Application {
     }
 
     /**
-     *
+     * Handles a change to the filter box
      * @param s
      */
     private void handleFilter(String s) {
@@ -302,7 +302,7 @@ public class InventoryManagementGUI extends Application {
     }
 
     /**
-     *
+     * Handles a change to the filter criteria
      * @param type
      */
     private void handleFilterCriteria(String type) {
@@ -311,7 +311,7 @@ public class InventoryManagementGUI extends Application {
     }
 
     /**
-     *
+     * Handles a new list request
      */
     private void handleNewList() {
         Alert confirmation;
@@ -335,7 +335,7 @@ public class InventoryManagementGUI extends Application {
     }
 
     /**
-     *
+     * Handles opening a file
      */
     private void handleOpenList() {
         Stage stage;
@@ -357,7 +357,7 @@ public class InventoryManagementGUI extends Application {
     }
 
     /**
-     *
+     * Handles saving a file
      */
     private void handleSaveList() {
         Stage stage;
@@ -378,7 +378,7 @@ public class InventoryManagementGUI extends Application {
     }
 
     /**
-     *
+     * Handles the About alert
      */
     private void handleAboutAlert() {
         Alert alert;
@@ -386,17 +386,24 @@ public class InventoryManagementGUI extends Application {
         alert.setTitle("Project 7");
         alert.setHeaderText("Inventory Management");
         alert.setContentText("Created by:\n\t"
-                             + "Caleb Davenport\t\t(github.com/caleb-davenport)\n\t"
-                + "Roan Martin-Hayden\t(github.com/roanmh)\n\n"
-                + "Spring 2016");
+                             + "Caleb Davenport\t\t"
+                             + "(github.com/caleb-davenport)\n\t"
+                             + "Roan Martin-Hayden\t(github.com/roanmh)\n\n"
+                             + "Spring 2016");
         alert.setGraphic(new ImageView(new Image("file:img/about.png",
                                                  100, 100, true, true)));
         alert.showAndWait();
     }
-
-    private static Optional<ButtonType> duplicateDialogResult(
-            ObservableList<Entry> nameMatches,
-            ObservableList<Entry> wholeMatches) {
+    
+    /**
+     * Give the user a choice when a duplicate entry is found
+     * @param nameMatches
+     * @param wholeMatches
+     * @return The result of whether the user clicked Continue, Edit or Cancel
+     */
+    private static Optional<ButtonType> duplicateResult(
+                                        ObservableList<Entry> nameMatches,
+                                        ObservableList<Entry> wholeMatches) {
 
         Dialog dialog;
         BorderPane borderPane;
@@ -445,6 +452,10 @@ public class InventoryManagementGUI extends Application {
         return dialog.showAndWait();
     }
 
+    /**
+     * Handles the dialog box for editing or adding an entry
+     * @param isEdit Determines if the entry is for an edit or an addition
+     */
     private void handleEntryDialog(boolean isEdit) {
         String actionString;
         Entry editableEntry;
@@ -465,7 +476,7 @@ public class InventoryManagementGUI extends Application {
         dialog.setHeaderText(actionString + " Entry");
         confirmButtonType = new ButtonType(actionString, ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(confirmButtonType,
-                ButtonType.CANCEL);
+                                                       ButtonType.CANCEL);
 
         grid = new GridPane();
         grid.setHgap(10);
@@ -511,39 +522,38 @@ public class InventoryManagementGUI extends Application {
             errTextNumber.setText(lastReport.numberErrorMessage());
             entryResult = dialog.showAndWait();
             if (entryResult.get().getButtonData() == ButtonData.OK_DONE) {
-                lastReport = Inventory.addEntryReport(name.getText(),
-                                                               number.getText(),
-                                                               notes.
-                                                               getText());
+                lastReport = Inventory.checkAddEntry(name.getText(),
+                                                     number.getText(),
+                                                     notes.getText());
                 if (lastReport.okayStatus()) {
                     if (isEdit) {
                         Inventory.editEntry(editableEntry,
-                                name.getText(),
-                                number.getText(),
-                                notes.getText());
-                    } else {
-                        Inventory.addEntry(name.getText(),
-                                number.getText(),
-                                notes.getText());
-                    }
-                    isRetry = false;
-                } else {
-                    if (lastReport.errorFlag()) {
-                        isRetry = true;
-                    } else if (lastReport.anyMatches()) {
-                        confirmResult = duplicateDialogHandler(lastReport.matchesByName(),
-                                lastReport.matchesInWhole());
-                        if (null != confirmResult.get().getText())
-                            switch (confirmResult.get().getText()) {
-                            case "Continue":
-                                if (isEdit) {
-                                    Inventory.editEntry(editableEntry,
-                                            name.getText(), number.getText(),
-                                            notes.getText());
-                                } else {
-                                    Inventory.addEntry(name.getText(),
+                                            name.getText(),
                                             number.getText(),
                                             notes.getText());
+                    } else {
+                        Inventory.addEntry(name.getText(),
+                                           number.getText(),
+                                           notes.getText());
+                    }
+                    isRetry = false;
+                } else if (lastReport.isERROR_FLAG()) isRetry = true;
+                else if (lastReport.isAnyMatches()) {
+                    confirmResult = duplicateResult(
+                                            lastReport.getNAME_MATCHES(),
+                                            lastReport.getWHOLE_MATCHES());
+                    if (null != confirmResult.get().getButtonData()) {
+                        switch (confirmResult.get().getButtonData()) {
+                            case YES:
+                                if (isEdit) {
+                                    Inventory.editEntry(editableEntry,
+                                                        name.getText(),
+                                                        number.getText(),
+                                                        notes.getText());
+                                } else {
+                                    Inventory.addEntry(name.getText(),
+                                                       number.getText(),
+                                                       notes.getText());
                                 }
                                 isRetry = false;
                                 break;
@@ -554,22 +564,19 @@ public class InventoryManagementGUI extends Application {
                                 break;
                             default:
                                 isRetry = false;
+                            case BACK_PREVIOUS:
                                 break;
                         }
                     }
-                } else {
-                    isRetry = false;
-                }
-            } else {
-                isRetry = false;
-            }
+                } else isRetry = false;
+            } else isRetry = false;
         }
         lastReport = new EntryReport();
         updateTable();
     }
 
     /**
-     *
+     * Entry point for running the program
      * @param args
      */
     public static void main(String[] args) {
