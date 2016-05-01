@@ -51,7 +51,7 @@ public class EntryReport {
      * @param wholeMatches List of Entry objects whom match entirely.
      * @param nameErrorMessage Error message about the name of attemptedEntry.
      * @param numberErrorMessage Error message about the number of
-     * attemptedEntry.
+ attemptedEntry.
      */
     public EntryReport(Entry attemptedEntry, ObservableList<Entry> nameMatches,
                        ObservableList<Entry> wholeMatches,

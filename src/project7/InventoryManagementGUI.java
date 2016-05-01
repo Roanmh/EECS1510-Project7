@@ -522,7 +522,7 @@ public class InventoryManagementGUI extends Application {
             errTextNumber.setText(lastReport.numberErrorMessage());
             entryResult = dialog.showAndWait();
             if (entryResult.get().getButtonData() == ButtonData.OK_DONE) {
-                lastReport = Inventory.checkAddEntry(name.getText(),
+                lastReport = Inventory.addEntryReport(name.getText(),
                                                      number.getText(),
                                                      notes.getText());
                 if (lastReport.okayStatus()) {
@@ -537,13 +537,14 @@ public class InventoryManagementGUI extends Application {
                                            notes.getText());
                     }
                     isRetry = false;
-                } else if (lastReport.isERROR_FLAG()) isRetry = true;
-                else if (lastReport.isAnyMatches()) {
+                } else if (lastReport.errorFlag()) {
+                    isRetry = true;
+                } else if (lastReport.anyMatches()) {
                     confirmResult = duplicateResult(
-                                            lastReport.getNAME_MATCHES(),
-                                            lastReport.getWHOLE_MATCHES());
-                    if (null != confirmResult.get().getButtonData()) {
-                        switch (confirmResult.get().getButtonData()) {
+                                            lastReport.matchesByName(),
+                                            lastReport.matchesInWhole());
+                    if (null != confirmResult.get().getText()) {
+                        switch (confirmResult.get().getText()) {
                             case "Continue":
                                 if (isEdit) {
                                     Inventory.editEntry(editableEntry,
