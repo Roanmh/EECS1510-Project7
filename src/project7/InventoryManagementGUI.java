@@ -15,9 +15,7 @@
 */
 package project7;
 
-import com.jfoenix.controls.JFXTreeTableColumn;
-import com.jfoenix.controls.JFXTreeTableView;
-import com.jfoenix.controls.RecursiveTreeItem;
+import com.jfoenix.controls.*;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -88,6 +86,7 @@ public class InventoryManagementGUI extends Application {
         root.setBottom(bottomBox);
 
         scene = new Scene(root, 800, 400);
+        scene.getStylesheets().add(InventoryManagementGUI.class.getResource("/stylesheet.css").toExternalForm());
         
         InventoryManagementGUI.primaryStage.setTitle("Inventory Management");
         InventoryManagementGUI.primaryStage.setScene(scene);
@@ -216,9 +215,9 @@ public class InventoryManagementGUI extends Application {
      * Initializes the panel on the right
      */
     private void setupSidePanel() {
-        Button buttonAddEntry = new Button("Add");
-        Button buttonEditEntry = new Button("Edit");
-        Button buttonDeleteEntry = new Button("Delete");
+        JFXButton buttonAddEntry = new JFXButton("Add");
+        JFXButton buttonEditEntry = new JFXButton("Edit");
+        JFXButton buttonDeleteEntry = new JFXButton("Delete");
         Image imgAdd = new Image("file:img/green_plus.png",
                                  16, 16, true, false);
         Image imgEdit = new Image("file:img/pencil.png",
@@ -253,8 +252,8 @@ public class InventoryManagementGUI extends Application {
      * Initializes the filter on the bottom of the GUI
      */
     private void setupBottomFilter() {
-        TextField textFieldFilter = new TextField();
-        ComboBox comboBox = new ComboBox();
+        JFXTextField textFieldFilter = new JFXTextField();
+        JFXComboBox<String> comboBox = new JFXComboBox<>();
         
         textFieldFilter.setPromptText("Filter");
         textFieldFilter.prefWidthProperty().bind(table.widthProperty());
@@ -298,7 +297,11 @@ public class InventoryManagementGUI extends Application {
      * Handles editing an entry
      */
     private void handleEditEntry() {
-        handleEntryDialog(true);
+        if (table.getSelectionModel().getSelectedIndices().size() == 0){
+            new JFXSnackbar().show("Select an item first.", "Action", 3, event -> {return;});
+        } else {
+            handleEntryDialog(true);
+        }
     }
 
     /**
